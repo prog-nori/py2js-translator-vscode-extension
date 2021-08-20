@@ -31,7 +31,7 @@ class Example():
         #     translator = Translator(parsed_ast)
         #     # translator.print()
         #     translator.run()
-        return [len(args), type(args)]
+        print([len(args), type(args)])
 
 if __name__ == '__main__':
     import sys

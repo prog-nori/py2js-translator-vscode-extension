@@ -3,18 +3,24 @@ import {
     ViewColumn,
     ExtensionContext,
     WebviewPanel,
+    NotebookCellOutput,
 } from 'vscode';
 
 import {
     Options,
     PythonShell,
     PythonShellError
-} from 'python-shell'
+} from 'python-shell';
+
+import {
+    spawn
+} from 'child_process';
+import { Readable } from 'stream';
 
 type Response = {
     text: string
     length: number
-}
+};
 
 export class Previewer {
 
@@ -34,93 +40,56 @@ export class Previewer {
         this.options_ = {
             ...PythonShell.defaultOptions,
             mode: 'text',
-            scriptPath: __dirname
-        }
+            scriptPath: __dirname,
+            pythonPath: 'python3'
+        };
         this.response_ = {
             text: '',
             length: 0
+        };
+    }
+
+    private setArg(arg: string, reset: boolean = false) {
+        console.log(typeof arg);
+        if(Array.isArray(this.options_.args) && reset === false) {
+            this.options_.args.push(arg);
+        } else {
+            this.options_.args = [arg];
         }
     }
 
-    private setArg(arg: string) {
-        console.log(typeof arg)
-        if(Array.isArray(this.options_.args)) {
-            this.options_.args.push(arg)
-        }else{
-            this.options_.args = [arg]
-        }
-    }
+    private async run(script: string) {
+        const args: Array<string> = this.options_.args? this.options_.args: [];
+        const target = `${__dirname}/${script}`;
+        const python = spawn('python', [target, args.join(' ')]);
+        const chunks: Array<Buffer> = new Array<Buffer>();
 
-    private setText(aText: string) {
-        console.log('入力：', aText)
-        const length = aText.length
-        const aString = aText.slice(this.response_.length)
-        this.response_.text = aString
-        this.response_.length = length
-        console.log('代入：', aString, length)
-        console.log('出力：', this.response_)
-    }
-
-    private execute(scriptPath: string, options: Options, callback: (err?: PythonShellError | null, output?: Array<any> | null) => any) {
-        let pyshell = new PythonShell(scriptPath, options);
-        const output: Array<any> = new Array<any>();
-        console.log('初期値')
-        console.log(output)
-
-        pyshell.on('message', function (message) {
-            // console.log(output)
-            output.push(message);
-        }).end(function (err: PythonShellError | null) {
-            return callback(err ? err : null, output.length ? output : null);
+        return new Promise((resolve, reject) => {
+            python.stdout.on('data', (chunk) => {
+                chunks.push(Buffer.from(chunk));
+            });
+            python.stderr.on('data', (data) => {
+                console.error(`stderr: ${data}`);
+                reject(data);
+            });
+            
+            python.on('exit', () => {
+                resolve(Buffer.concat(chunks).toString('utf-8'));
+            });
         });
-        console.log('戻り値')
-        console.log(output)
-        return output
-    };
-
-    private run(script: string) {
-        const pyShell = new PythonShell(script, this.options_)
-        // let output: Array<string> = []
-        // pyShell.on('message', (message) => {
-        //     output.push(message)
-        //     // console.log(message, output)
-        // }).end((err: PythonShellError, exitCode: number=output.length, exitSignal: string): any => {
-        //     if(err !== undefined) {
-        //         throw err
-        //     }
-        // })
-        // console.log(output)
-        // this.setText(output.join('<br/>'))
-        const resp = this.execute(script, this.options_, (err, res) => {
-            console.log('err:')
-            console.log(err)
-            console.log('-----')
-            console.log('res:')
-            console.log(res)
-        })
-        console.log()
-        console.log('response:')
-        console.log(resp)
-        // PythonShell.run(script, this.options_, (err, res) => {
-        //     console.log(err, res)
-        //     console.log('未更新:', this.response_)
-        //     if(err) {
-        //         console.error(err)
-        //         throw err
-        //     }
-        //     // const res_str: string = (res || [''])[0]
-        //     this.setText(res === undefined? '': res.join('<br/>'))
-        // })
     }
 
     public update() {
         let editor = vWindow.activeTextEditor;
         if(editor?.document){
-            this.setArg(editor.document.getText())
-            this.run('./translator/execute.py')
+            this.setArg(editor.document.getText(), true);
+            this.run('translator/execute.py').then(res => {
+                console.log('async log:', res);
+                this.response_.text = String(res);
+            });
         }
-        console.log('response:')
-        console.log(this.response_)
+        console.log('response:');
+        console.log(this.response_);
         this.panel_.webview.html = `<!DOCTYPE html>
         <html lang="en">
         <head>
@@ -129,7 +98,7 @@ export class Previewer {
             <title>Cat Coding</title>
         </head>
         <body>
-            <h1>こんにちは日本</h1>
+            <h1>Preview</h1>
             <code style="display: block;white-space: pre-wrap">${this.response_.text}</code>
         </body>
         </html>`;

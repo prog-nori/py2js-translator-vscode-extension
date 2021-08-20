@@ -30,7 +30,7 @@ export class Py2JsPreview {
 	private _previewer: Previewer;
 
 	constructor(context: ExtensionContext) {
-		this._context = context
+		this._context = context;
 		this._previewer = new Previewer(context);
 	}
 
