@@ -21,7 +21,11 @@ class Stmt(NodeParser):
     def convert_FunctionDef(self):
         jscode: JsCode = JsCode()
         isThisInClass = self.isThisInClass
-        name, args, body = self.parseNodes('name', 'args', 'body')
+        _name, _args, _body = self.parseNodes('name', 'args', 'body')
+        name = self.recursional_function(_name)
+        args = self.recursional_function(_args)
+        body = self.recursional_function(_body)
+        print('BODY:', _body)
 
         print('=== function def ===')
         print('Name:', name, type(name))
@@ -55,15 +59,11 @@ class Stmt(NodeParser):
 
     def convert_ClassDef(self):
         jscode: JsCode = JsCode()
-        print(self.nodes, type(self.nodes))
+        # print(self.nodes, type(self.nodes))
         _name, _bases, _body = self.parseNodes('name', 'bases', 'body')
         name = self.recursional_function(_name)
         bases = self.recursional_function(_bases)
         body = self.recursional_function(_body)
-        # name = self.recursional_function(self.nodes.name)
-        # print(self.nodes, type(self.nodes))
-        # bases = self.recursional_function(self.nodes.bases)
-        # body = self.recursional_function(self.nodes.body)
 
         print('Name:', name, type(name))
         print('Bases:', bases, type(bases))
@@ -87,30 +87,39 @@ class Stmt(NodeParser):
         # self.isThisInClass = False
         return jscode
 
-    def convert_Return(self, v, opt={}):
-        value = self.func(v.get('value'))
+    def convert_Return(self):
+        # print('リターン！俺のターン！')
         jscode: JsCode = JsCode()
-        if value is not None:
+        # print(self.nodes.__dict__)
+        value = self.parseNodes('value')
+        # print('Value:', value)
+        if value is not []:
             jscode.add(f'return {value}')
         else:
             jscode.add(f'return')
+        # value = self.func(v.get('value'))
+        # if value is not None:
+        #     jscode.add(f'return {value}')
+        # else:
+        #     jscode.add(f'return')
         return jscode
 
-    def convert_Delete(self, v, opt={}):
+    def convert_Delete(self):
         jscode: JsCode = JsCode()
-        jscode.add(self.func(v, opt={}))
+        jscode.add(self.recursional_function(self.nodes))
+        # jscode.add(self.func(v, opt={}))
         return jscode
 
     def convert_Assign(self, v, opt={}):
         jscode: JsCode = JsCode()
-        variable_name = self.func(deep_get(v, ['targets', 0], ''))
-        value = self.get_assign_variable_type(v.get('value'))
-        keyword = ''
-        if isinstance(value, str) and len(value) > 0:
-            if value[0].isupper():
-                value = 'new {}'.format(value)
-        keyword = 'let'
-        jscode.add(f'{keyword} {variable_name} = {value}')
+        # variable_name = self.func(deep_get(v, ['targets', 0], ''))
+        # value = self.get_assign_variable_type(v.get('value'))
+        # keyword = ''
+        # if isinstance(value, str) and len(value) > 0:
+        #     if value[0].isupper():
+        #         value = 'new {}'.format(value)
+        # keyword = 'let'
+        # jscode.add(f'{keyword} {variable_name} = {value}')
         return jscode
 
     def convert_AugAssign(self, v, opt={}):

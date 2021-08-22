@@ -2,10 +2,11 @@
 #! -*- coding:utf-8 -*-
 
 import ast
-import re
 from py2js.modules.mod import Mod
 from py2js.modules.stmt import Stmt
 from py2js.modules.standard import Standard
+from py2js.modules.arguments import Arguments
+from py2js.modules.arg import Arg
 
 class Translator:
     def __init__(self, abstract_tree):
@@ -13,6 +14,8 @@ class Translator:
         self.mod = Mod(self.parse)
         self.stmt = Stmt(self.parse)
         self.standard = Standard(self.parse)
+        self.arguments = Arguments(self.parse)
+        self.arg = Arg(self.parse)
         self.synbols = [
             # mod
             {
@@ -24,12 +27,12 @@ class Translator:
             },{
                 'type': ast.Expression,
                 'function': self.mod.convert_Expression
+            },{
+                'type': ast.FunctionType,
+                'function': self.mod.convert_FunctionType
             },
             # stmt
             {
-                'type': ast.FunctionType,
-                'function': self.mod.convert_FunctionType
-            },{
                 'type': ast.FunctionDef,
                 'function': self.stmt.convert_FunctionDef
             },
@@ -40,6 +43,18 @@ class Translator:
             {
                 'type': ast.ClassDef,
                 'function': self.stmt.convert_ClassDef
+            },{
+                'type': ast.Return,
+                'function': self.stmt.convert_Return
+            },
+            # arguments
+            {
+                'type': ast.arguments,
+                'function': self.arguments.convert_Arguments
+            },
+            {
+                'type': ast.arg,
+                'function': self.arg.convert_Arg
             },
             # ohters
             {
@@ -61,6 +76,8 @@ class Translator:
         self.mod.set_nodes(nodes)
         self.stmt.set_nodes(nodes)
         self.standard.set_nodes(nodes)
+        self.arguments.set_nodes(nodes)
+        self.arg.set_nodes(nodes)
         aList = []
 
         for aSymbol in self.synbols:
