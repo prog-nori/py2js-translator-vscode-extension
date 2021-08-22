@@ -1,9 +1,9 @@
 #! /usr/bin/env python3
 #! -*- coding:utf-8 -*-
-from py2js.modules.parseNodes import ParseNodes
-from ast2js.src.util.jscode import JsCode
+from py2js.modules.nodeParser import NodeParser
+from py2js.util.jscode import JsCode
 
-class Mod(ParseNodes):
+class Mod(NodeParser):
     """
     astモジュールで定義されているModに含まれるノードの解析を行う
     """    

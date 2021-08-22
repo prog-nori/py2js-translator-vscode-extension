@@ -1,15 +1,9 @@
 #! /usr/bin/env python3
 #! -*- coding:utf-8 -*-
-from ast import (
-    Module,
-    Interactive,
-    Expression,
-    FunctionType
-    )
-from py2js.modules.parseNodes import ParseNodes
+from py2js.modules.nodeParser import NodeParser
 from ast2js.src.util.jscode import JsCode
 
-class Stmt(ParseNodes):
+class Stmt(NodeParser):
     """
     astモジュールで定義されているModに含まれるノードの解析を行う
     """
@@ -27,10 +21,9 @@ class Stmt(ParseNodes):
     def convert_FunctionDef(self):
         jscode: JsCode = JsCode()
         isThisInClass = self.isThisInClass
-        name = self.recursional_function(self.nodes.name)
-        args = self.recursional_function(self.nodes.args)
-        body = self.recursional_function(self.nodes.body)
+        name, args, body = self.parseNodes('name', 'args', 'body')
 
+        print('=== function def ===')
         print('Name:', name, type(name))
         print('Args:', args, type(args))
         print('Body:', body, type(body))
@@ -63,10 +56,14 @@ class Stmt(ParseNodes):
     def convert_ClassDef(self):
         jscode: JsCode = JsCode()
         print(self.nodes, type(self.nodes))
-        name = self.recursional_function(self.nodes.name)
-        print(self.nodes, type(self.nodes))
-        bases = self.recursional_function(self.nodes.bases)
-        body = self.recursional_function(self.nodes.body)
+        _name, _bases, _body = self.parseNodes('name', 'bases', 'body')
+        name = self.recursional_function(_name)
+        bases = self.recursional_function(_bases)
+        body = self.recursional_function(_body)
+        # name = self.recursional_function(self.nodes.name)
+        # print(self.nodes, type(self.nodes))
+        # bases = self.recursional_function(self.nodes.bases)
+        # body = self.recursional_function(self.nodes.body)
 
         print('Name:', name, type(name))
         print('Bases:', bases, type(bases))
