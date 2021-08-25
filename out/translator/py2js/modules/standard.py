@@ -7,10 +7,13 @@ from py2js.util.jscode import JsCode
 class Standard(NodeParser):
     def convert_List(self):
         jscode: JsCode = JsCode()
-        print('ウエーい')
+        # print('ウエーい')
         for aNode in self.nodes:
-            print('aNode:', aNode)
-            jscode.add(self.recursional_function(aNode))
+            # print('aNode:', aNode, aNode.__dict__)
+            res = self.recursional_function(aNode)
+            # print('aNode res:', res)
+            jscode.add(res)
+            # jscode.add(self.recursional_function(aNode))
         return jscode
     
     def convert_Dict(self):

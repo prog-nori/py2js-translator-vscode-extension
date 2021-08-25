@@ -6,7 +6,7 @@ from py2js.util.jscode import JsCode
 
 class Arguments(NodeParser):
 
-    tuples = ...
+    # tuples = ...
 
     # def __init__(self, recursion_function):
     #     self.func = recursion_function
@@ -14,6 +14,21 @@ class Arguments(NodeParser):
     #         'arguments': self.convert_Arguments
     #     }
     #     return
+
+    def _get_flat_list(self, aList):
+        """
+        多重リストを平坦化する
+        """
+        result = []
+        if isinstance(aList, list):
+            for item in aList:
+                if isinstance(item, list):
+                    result.extend(self._get_flat_list(item))
+                else:
+                    result.append(item)
+        else:
+            result = aList
+        return result
 
     def convert_Arguments(self):
         jscode: JsCode = JsCode()
@@ -26,13 +41,27 @@ class Arguments(NodeParser):
             'defaults',
             isList=True
             )
-        args = list(filter(lambda x: not x == 'self', args))
-        print('args:', args)
-        print('vararg:', vararg)
-        print('kwonlyarg:', kwonlyargs)
-        print('kw_defaults:', kw_defaults)
-        print('kwarg:', kwarg)
-        print('defaults:', defaults)
+        # args = list(filter(lambda x: not str(x) == 'self', args))
+        kwarg = [f'...{item}' for item in kwarg]
+        # print('args:', args)
+        # print('vararg:', vararg)
+        # print('kwonlyarg:', kwonlyargs)
+        # print('kw_defaults:', kw_defaults)
+        # print('kwarg:', kwarg)
+        # print('defaults:', defaults)
+        aList = []
+        for item in [args, vararg, kwonlyargs, kw_defaults, kwarg, defaults]:
+            item = self._get_flat_list(item)
+            if isinstance(item, list):
+                for arg in item:
+                    aList.append(str(arg))
+            else:
+                aList.extend(item)
+        aList = list(filter(lambda x: not str(x) == 'self', aList))
+        # print('aLIST:', aList)
+        jscode.add(', '.join(aList))
+        print('jscode:', jscode)
+
         # _args = v.get('args', [])
         # _vararg = v.get('vararg', [])
         # _kwonlyargs = v.get('kwonlyarg', [])

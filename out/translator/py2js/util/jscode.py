@@ -20,7 +20,7 @@ class JsCode(object):
     
 
     def get(self) -> list:
-        return [str(item) for item in self._code_list]
+        return [self.get(item) if isinstance(item, JsCode) else str(item) for item in self._code_list]
 
     def add(self, aLine: Union[str, list]) -> None:
         if isinstance(aLine, list):

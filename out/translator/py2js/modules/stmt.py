@@ -24,13 +24,19 @@ class Stmt(NodeParser):
         _name, _args, _body = self.parseNodes('name', 'args', 'body')
         name = self.recursional_function(_name)
         args = self.recursional_function(_args)
+        print('さいき')
         body = self.recursional_function(_body)
-        print('BODY:', _body)
 
         print('=== function def ===')
         print('Name:', name, type(name))
         print('Args:', args, type(args))
         print('Body:', body, type(body))
+        for aContent in body:
+            print('>', aContent)
+        for aContent in name:
+            print('>>', aContent)
+        for aContent in args:
+            print('>>>', aContent)
 
         # args = self.func(v.get('args'), {'list': True})
         # aList = list(filter(lambda x: x not in ['null'], args.get()))
@@ -65,6 +71,7 @@ class Stmt(NodeParser):
         bases = self.recursional_function(_bases)
         body = self.recursional_function(_body)
 
+        print('=== ClassDef ===')
         print('Name:', name, type(name))
         print('Bases:', bases, type(bases))
         print('Body:', body, type(body))
@@ -90,18 +97,11 @@ class Stmt(NodeParser):
     def convert_Return(self):
         # print('リターン！俺のターン！')
         jscode: JsCode = JsCode()
-        # print(self.nodes.__dict__)
         value = self.parseNodes('value')
-        # print('Value:', value)
-        if value is not []:
+        if value != []:
             jscode.add(f'return {value}')
         else:
             jscode.add(f'return')
-        # value = self.func(v.get('value'))
-        # if value is not None:
-        #     jscode.add(f'return {value}')
-        # else:
-        #     jscode.add(f'return')
         return jscode
 
     def convert_Delete(self):
@@ -110,8 +110,10 @@ class Stmt(NodeParser):
         # jscode.add(self.func(v, opt={}))
         return jscode
 
-    def convert_Assign(self, v, opt={}):
+    def convert_Assign(self):
         jscode: JsCode = JsCode()
+        targets = self.parseNodes('targets')
+        print('Targets:', targets)
         # variable_name = self.func(deep_get(v, ['targets', 0], ''))
         # value = self.get_assign_variable_type(v.get('value'))
         # keyword = ''
@@ -122,20 +124,31 @@ class Stmt(NodeParser):
         # jscode.add(f'{keyword} {variable_name} = {value}')
         return jscode
 
-    def convert_AugAssign(self, v, opt={}):
+    def convert_AugAssign(self):
         # += -= *= /=等
         jscode: JsCode = JsCode()
-        target = v.get('target')
-        _key = v.get('op', {})
-        key = self.func(_key)
-        op = ''
-        if not key == '':
-            op = f'{key}='
+        # print('=AUG_ASSIGN=')
+        # print(self.nodes.__dict__)
+        # print(self.nodes.__dict__['target'].__dict__)
+        target = self.recursional_function('target')
+        op = self.recursional_function('op')
+        value = self.recursional_function('value')
+        if op:
+            jscode.add(f'{target} {op}= {value}')
         else:
-            op = '+='
-        value = self.func(v.get('value'))
-        left = self.func(target)
-        jscode.add(f'{left} {op} {value}')
+            jscode.add(f'{target} += {value}')
+        # print(f'target / op: {target}/{op}')
+        # target = v.get('target')
+        # _key = v.get('op', {})
+        # key = self.func(_key)
+        # op = ''
+        # if not key == '':
+        #     op = f'{key}='
+        # else:
+        #     op = '+='
+        # value = self.func(v.get('value'))
+        # left = self.func(target)
+        # jscode.add(f'{left} {op} {value}')
         return jscode
 
     def convert_AnnAssign(self, v, opt={}):
@@ -256,12 +269,17 @@ class Stmt(NodeParser):
         jscode: JsCode = JsCode()
         return jscode
 
-    def convert_Expr(self, v, opt={}):
+    def convert_Expr(self):
         jscode: JsCode = JsCode()
-        _value = v.get('value')
-        if _value is not None:
-            value = self.func(_value)
-            jscode.add(value)
+        print(self.nodes.__dict__)
+        value = self.recursional_function('value')
+        for item in value:
+            print('val:', item)
+        jscode.add(value)
+        # _value = v.get('value')
+        # if _value is not None:
+        #     value = self.func(_value)
+        #     jscode.add(value)
         return jscode
 
     def convert_Pass(self, v, opt={}):
