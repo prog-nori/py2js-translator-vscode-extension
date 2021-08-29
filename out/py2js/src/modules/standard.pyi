@@ -1,0 +1,13 @@
+#! /usr/bin/env python3
+#! -*- coding: utf-8 -*-
+
+from py2js import Py2JS
+
+class Standard:
+    def convert_List(self: Standard, nodes: list, parse: Py2JS.parse) -> str: ...
+
+    def convert_Dict(self: Standard, nodes: dict, parse: Py2JS.parse) -> str: ...
+
+    def convert_Str(self: Standard, nodes: str, parse: Py2JS.parse) -> str: ...
+
+    def convert_None(self: Standard, nodes: None, parse: Py2JS.parse) -> str: ...
