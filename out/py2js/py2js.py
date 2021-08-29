@@ -21,7 +21,7 @@ class Py2JS:
         res = func(nodes, self.parse)
         print(type_name)
         # print(res)
-        return
+        return res
     
     def print(self):
         from pprint import pprint

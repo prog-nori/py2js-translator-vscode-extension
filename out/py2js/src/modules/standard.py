@@ -18,4 +18,5 @@ class Standard:
         return nodes
     
     def convert_None(self, nodes, _):
+        print('<None type function!!>')
         return ''

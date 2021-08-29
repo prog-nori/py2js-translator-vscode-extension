@@ -3,7 +3,7 @@
 
 class Stmt:
     def convert_FunctionDef(self, nodes, parse):
-        print('[FUNCTION]', nodes)
+        print('[FUNCTION]', nodes.__dict__)
         name = parse(nodes.name)
         args = parse(nodes.args)
         body = parse(nodes.body)

@@ -5,12 +5,16 @@ import ast
 from src.modules.standard import Standard
 from src.modules.mod import Mod
 from src.modules.stmt import Stmt
+from src.modules.arguments import Arguments
+from src.modules.arg import Arg
 
 class Symbol:
     def __init__(self):
         mod = Mod()
         standard = Standard()
         stmt = Stmt()
+        arguments = Arguments()
+        arg = Arg()
         self.symbol_ = {
             # 標準の型
             list: standard.convert_List,
@@ -24,7 +28,7 @@ class Symbol:
             ast.FunctionType: mod.convert_FunctionType,
             # stmt系
             ast.FunctionDef: stmt.convert_FunctionDef,
-            ast.AsyncFunctionDef: stmt.convert_FunctionDef
+            ast.AsyncFunctionDef: stmt.convert_FunctionDef,
             # expr系
             # expr_context系
             # boolop系
@@ -34,7 +38,9 @@ class Symbol:
             # comprehension系
             # excepthandler系
             # arguments系
+            ast.arguments: arguments.convert_Arguments,
             # arg系
+            ast.arg: arg.convert_Arg,
             # keyword系
             # alias系
             # withitem系
@@ -42,6 +48,8 @@ class Symbol:
         }
     
     def get(self, aKey):
-        print(aKey.__name__)
-        # print('>', self.symbol_.get(aKey))
-        return self.symbol_.get(aKey)
+        if aKey.__name__ == 'NoneType':
+            dummy = lambda nodes, _: ''
+            return dummy
+        else:
+            return self.symbol_.get(aKey)
