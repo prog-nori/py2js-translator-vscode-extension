@@ -3,18 +3,26 @@
 
 class Stmt:
     def convert_FunctionDef(self, nodes, parse):
-        print('[FUNCTION]', nodes.__dict__)
         name = parse(nodes.name)
         args = parse(nodes.args)
-        body = parse(nodes.body)
-        print(f'function {name}({args})', '{', body, '}')
-        return ''
+        body = '\n'.join(parse(nodes.body))
+        frame = 'function {}({}){{\n{}}}\n'
+        return frame.format(name, args, body)
 
     def convert_AsyncFunctionDef(self, nodes, parse):
-        return ''
+        return f'async {self.convert_FunctionDef(nodes, parse)}'
 
     def convert_ClassDef(self, nodes, parse):
-        return ''
+        name = parse(nodes.name)
+        bases_ = parse(nodes.bases)
+        bases = bases_[0] if len(bases_) > 0 else ''
+        body = '\n'.join(parse(nodes.body))
+        result = ''
+        if len(bases) > 0:
+            result = 'class {} extends {} {{\n{}}}\n'.format(name, bases, body)
+        else:
+            result = 'class {} {{\n{}}}\n'.format(name, body)
+        return result
 
     def convert_Return(self, nodes, parse):
         return ''

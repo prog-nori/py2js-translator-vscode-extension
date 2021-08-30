@@ -5,7 +5,9 @@ class Standard:
     def convert_List(self, nodes, parse):
         result = []
         for item in nodes:
-            result.append(parse(item))
+            parsed = parse(item)
+            if parsed is not None:
+                result.append(parse(item))
         return result
 
     def convert_Dict(self, nodes, parse):

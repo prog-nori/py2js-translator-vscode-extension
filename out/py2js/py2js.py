@@ -19,7 +19,7 @@ class Py2JS:
         if func is None:
             return
         res = func(nodes, self.parse)
-        print(type_name)
+        # print(type_name)
         # print(res)
         return res
     
@@ -28,5 +28,5 @@ class Py2JS:
         pprint(self.ast_)
     
     def run(self):
-        self.parse(self.ast_)
-        return
+        result = self.parse(self.ast_)
+        return result

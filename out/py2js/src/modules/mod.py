@@ -5,8 +5,7 @@ class Mod:
     def convert_Module(self, nodes, parse):
         # body
         body = parse(nodes.body)
-        print(body)
-        return 'hello module'
+        return '\n'.join(body)
 
     def convert_Interactive(self, nodes, parse):
         return ''

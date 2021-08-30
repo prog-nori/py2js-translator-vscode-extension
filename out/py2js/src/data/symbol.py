@@ -29,6 +29,7 @@ class Symbol:
             # stmt系
             ast.FunctionDef: stmt.convert_FunctionDef,
             ast.AsyncFunctionDef: stmt.convert_FunctionDef,
+            ast.ClassDef: stmt.convert_ClassDef,
             # expr系
             # expr_context系
             # boolop系

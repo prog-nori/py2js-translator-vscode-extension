@@ -9,7 +9,9 @@ def main():
         tree = ast.parse(''.join(fp.readlines()))
         translator = Py2JS(tree)
         # translator.print()
-        translator.run()
+        result = translator.run()
+        print('== result ==')
+        print(result)
     return
 
 if __name__ == '__main__':
