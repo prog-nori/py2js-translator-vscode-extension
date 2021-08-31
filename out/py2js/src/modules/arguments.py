@@ -1,7 +1,8 @@
 #! /usr/bin/env python3
 #! -*- coding: utf-8 -*-
+from src.modules.nodeParser import NodeParser
 
-class Arguments:
+class Arguments(NodeParser):
     def _get_flat_list(self, aList):
         """
         多重リストを平坦化する
@@ -16,15 +17,15 @@ class Arguments:
         else:
             result = aList
         return result
-    def convert_Arguments(self, nodes, parse):
-        args = parse(nodes.args)
-        defaults = parse(nodes.defaults)
-        kw_defaults = parse(nodes.kw_defaults)
-        kwarg = parse(nodes.kwarg)
-        kwonlyargs = parse(nodes.kwonlyargs)
-        vararg = parse(nodes.vararg)
-        print('[args]', args, defaults, kw_defaults, kwarg, kwonlyargs, vararg)
-        print('[args]', type(args), type(defaults), type(kw_defaults), type(kwarg), type(kwonlyargs), type(vararg))
+    def convert_Arguments(self, nodes):
+        args = self.parse(nodes.args)
+        defaults = self.parse(nodes.defaults)
+        kw_defaults = self.parse(nodes.kw_defaults)
+        kwarg = self.parse(nodes.kwarg)
+        kwonlyargs = self.parse(nodes.kwonlyargs)
+        vararg = self.parse(nodes.vararg)
+        # print('[args]', args, defaults, kw_defaults, kwarg, kwonlyargs, vararg)
+        # print('[args]', type(args), type(defaults), type(kw_defaults), type(kwarg), type(kwonlyargs), type(vararg))
         # print(''.join(self._get_flat_list([args, defaults, kw_defaults, kwarg, kwonlyargs, vararg])))
         aList = list(filter(lambda x: x not in [None, [], ''], [args, defaults, kw_defaults, kwarg, kwonlyargs, vararg]))
 
