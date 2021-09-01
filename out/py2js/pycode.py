@@ -7,6 +7,7 @@ class Example:
         self.hello_world()
         print(self.str_join('Hello', 'World.'))
         print(self.equals('A', 'A'))
+        a = b = 1
         for i in range(5):
             print(i)
         for j in [1, 2, 3]:

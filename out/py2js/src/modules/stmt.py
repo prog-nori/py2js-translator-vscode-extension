@@ -26,19 +26,23 @@ class Stmt(NodeParser):
         return result
 
     def convert_Return(self, nodes):
-        value = self.parse(nodes)
+        value = self.parse(nodes.value)
         result = ''
         if value:
-            result = f'return {value}'
+            result = f'return {value}\n'
         else:
-            result = 'return'
+            result = 'return\n'
         return result
 
     def convert_Delete(self, nodes):
         return ''
 
     def convert_Assign(self, nodes):
-        return ''
+        targets = self.parse(nodes.targets)
+        theTarget = ' = '.join(targets)
+        value = self.parse(nodes.value)
+        # print(targets, value, ':', ' = '.join(targets), '=', value)
+        return ' = '.join([theTarget, value])
 
     def convert_AugAssign(self, nodes):
         return ''

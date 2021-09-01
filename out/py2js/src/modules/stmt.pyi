@@ -2,9 +2,9 @@
 #! -*- coding: utf-8 -*-
 
 import ast
-from py2js import Py2JS
+from src.modules.nodeParser import NodeParser
 
-class Stmt:
+class Stmt(NodeParser):
     def convert_FunctionDef(self: Stmt, nodes: ast.FunctionDef) -> str: ...
     def convert_AsyncFunctionDef(self: Stmt, nodes: ast.AsyncFunctionDef) -> str: ...
     def convert_ClassDef(self: Stmt, nodes: ast.ClassDef) -> str: ...
