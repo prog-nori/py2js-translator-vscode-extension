@@ -35,8 +35,18 @@ class Expr(NodeParser):
         return ''
     def convert_Compare(self, nodes):
         return ''
+
     def convert_Call(self, nodes):
-        return ''
+        """
+        関数の呼び出し処理。キーワード付きのやーつ非対応
+        """
+        func = self.parse(nodes.func)
+        args = self.parse(nodes.args)
+        keywords = self.parse(nodes.keywords)
+        arguments = ', '.join(args)
+        result = f'{func}({arguments})'
+        return result
+
     def convert_FormattedValue(self, nodes):
         return ''
     def convert_JoinedStr(self, nodes):
@@ -47,7 +57,10 @@ class Expr(NodeParser):
         return str(nodes.value)
 
     def convert_Attribute(self, nodes):
-        return ''
+        value = self.parse(nodes.value)
+        attr = self.parse(nodes.attr)
+        return '.'.join([value, attr])
+
     def convert_Subscript(self, nodes):
         return ''
     def convert_Starred(self, nodes):
@@ -57,7 +70,10 @@ class Expr(NodeParser):
         return id
 
     def convert_List(self, nodes):
-        return ''
+        elts = self.parse(nodes.elts)
+        item = ', '.join(elts)
+        return f'[{item}]'
+
     def convert_Tuple(self, nodes):
         return ''
     def convert_Slice(self, nodes):

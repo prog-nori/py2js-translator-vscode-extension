@@ -1,6 +1,9 @@
 #! /usr/bin/env python3
 #! -*- coding: utf-8 -*-
 from src.modules.nodeParser import NodeParser
+from src.modules.module_options.for_extension import (
+    atopy
+)
 
 class Stmt(NodeParser):
     def convert_FunctionDef(self, nodes):
@@ -51,7 +54,34 @@ class Stmt(NodeParser):
         return ''
 
     def convert_For(self, nodes):
-        return ''
+        """
+        orelse以外実装
+        """
+        target = self.parse(nodes.target)
+        iter = self.parse(nodes.iter)
+        body = '\n'.join(self.parse(nodes.body))
+        orelse = self.parse(nodes.orelse)
+        for_statement = ''
+        times, data_type = atopy(iter)
+        # orelseはbreakしないでループを抜け出した時のみはっか
+
+        # print('===for===')
+        # print('target:', target)
+        # print('iter:', iter, type(iter), type(nodes.iter))
+        # print('isList', data_type)
+        # print('body:', body)
+        # print('type:', times, data_type)
+
+        if data_type == 'list':
+            for_statement = f'for(const {target} of {iter}) {{\n{body}\n}}\n'
+        elif data_type == 'dict':
+            for_statement = f'for(const {target} in {iter}) {{\n{body}\n}}\n'
+        elif data_type == 'range':
+            # 内部のループに対して[i]を与える処理はまだ実装していない
+            for_statement = f'for(let i = 0; i < {times}; i++) {{\n{body}\n}}\n'
+        # enumerate処理未実装
+        # 例外処理未実装
+        return for_statement
 
     def convert_AsyncFor(self, nodes):
         return ''
@@ -90,7 +120,8 @@ class Stmt(NodeParser):
         return ''
 
     def convert_Expr(self, nodes):
-        return ''
+        value = self.parse(nodes.value)
+        return value
 
     def convert_Pass(self, nodes):
         return ''
