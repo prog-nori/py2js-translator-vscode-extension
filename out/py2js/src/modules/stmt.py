@@ -10,8 +10,8 @@ class Stmt(NodeParser):
         name = self.parse(nodes.name)
         args = self.parse(nodes.args)
         body = '\n'.join(self.parse(nodes.body))
-        frame = 'function {}({}){{\n{}}}\n'
-        return frame.format(name, args, body)
+        functinon_statement = f'function {name}({args}){{\n{body}\n}}\n'
+        return functinon_statement
 
     def convert_AsyncFunctionDef(self, nodes):
         return f'async {self.convert_FunctionDef(nodes, self.parse)}'
@@ -48,7 +48,11 @@ class Stmt(NodeParser):
         return ' = '.join([theTarget, value])
 
     def convert_AugAssign(self, nodes):
-        return ''
+        target = self.parse(nodes.target)
+        op = self.parse(nodes.op)
+        value = self.parse(nodes.value)
+        augAssign_statement = f'{target} {op}= {value}'
+        return augAssign_statement
 
     def convert_AnnAssign(self, nodes):
         return ''
@@ -87,10 +91,19 @@ class Stmt(NodeParser):
         return ''
 
     def convert_While(self, nodes):
-        return ''
+        test = self.parse(nodes.test)
+        body = '\n'.join(self.parse(nodes.body))
+        oelese = self.parse(nodes.orelse)
+        # orelseはまだ実装しない
+        while_statement = f'while({test}) {{\n{body}\n}}\n'
+        return while_statement
 
     def convert_If(self, nodes):
-        return ''
+        test = self.parse(nodes.test)
+        body = '\n'.join(self.parse(nodes.body))
+        orelse = self.parse(nodes.body)
+        if_statement = f'if({test}) {{\n{body}\n}}\n'
+        return if_statement
 
     def convert_With(self, nodes):
         return ''
@@ -127,8 +140,8 @@ class Stmt(NodeParser):
         return ''
 
     def convert_Break(self, nodes):
-        return ''
+        return 'break'
 
     def convert_Continue(self, nodes):
-        return ''
+        return 'continue'
         

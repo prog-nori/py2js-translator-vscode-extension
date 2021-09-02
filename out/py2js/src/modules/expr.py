@@ -8,7 +8,11 @@ class Expr(NodeParser):
     def convert_NamedExpr(self, nodes):
         return ''
     def convert_BinOp(self, nodes):
-        return ''
+        left = self.parse(nodes.left)
+        op = self.parse(nodes.op)
+        right = self.parse(nodes.right)
+        binOp_statement = f'{left} {op} {right}'
+        return binOp_statement
     def convert_UnaryOp(self, nodes):
         return ''
     def convert_Lambda(self, nodes):
