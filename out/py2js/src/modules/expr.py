@@ -57,8 +57,13 @@ class Expr(NodeParser):
         return ''
 
     def convert_Constant(self, nodes):
-        # value = self.parse(nodes.value)
-        return str(nodes.value)
+        value = nodes.value
+        constant_statement = ''
+        if isinstance(value, str):
+            constant_statement = f'\'{value}\''
+        else:
+            constant_statement = str(value)
+        return constant_statement
 
     def convert_Attribute(self, nodes):
         value = self.parse(nodes.value)
