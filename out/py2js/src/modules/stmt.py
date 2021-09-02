@@ -69,12 +69,12 @@ class Stmt(NodeParser):
         times, data_type = atopy(iter)
         # orelseはbreakしないでループを抜け出した時のみはっか
 
-        print('===for===')
-        print('target:', target)
-        print('iter:', iter, type(iter), type(nodes.iter))
-        print('isList', data_type)
-        print('body:', body)
-        print('type:', times, data_type)
+        # print('===for===')
+        # print('target:', target)
+        # print('iter:', iter, type(iter), type(nodes.iter))
+        # print('isList', data_type)
+        # print('body:', body)
+        # print('type:', times, data_type)
 
         if data_type == 'list':
             for_statement = f'for(const {target} of {iter}) {{\n{body}\n}}\n'

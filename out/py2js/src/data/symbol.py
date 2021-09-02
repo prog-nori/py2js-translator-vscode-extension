@@ -10,6 +10,7 @@ from src.modules.expr import Expr
 from src.modules.arguments import Arguments
 from src.modules.arg import Arg
 from src.modules.operator import Operator
+from src.modules.comprehension import Comprehension
 
 class Symbol(object):
 
@@ -21,6 +22,7 @@ class Symbol(object):
         operator = Operator(parser)
         arguments = Arguments(parser)
         arg = Arg(parser)
+        comprehension = Comprehension(parser)
 
         self.symbol_ = {
             # 標準の型
@@ -106,6 +108,7 @@ class Symbol(object):
             # unaryop系
             # cmpop系
             # comprehension系
+            ast.comprehension: comprehension.convert_comprehension,
             # excepthandler系
             # arguments系
             ast.arguments: arguments.convert_Arguments,

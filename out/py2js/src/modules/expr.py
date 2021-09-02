@@ -17,8 +17,21 @@ class Expr(NodeParser):
         return ''
     def convert_Lambda(self, nodes):
         return ''
+
     def convert_IfExp(self, nodes):
-        return ''
+        test = self.parse(nodes.test)
+        body = ''.join(self.parse(nodes.body))
+        orelse = self.parse(nodes.orelse)
+        print('test:', test)
+        print('body:', body)
+        print('orelse:', orelse)
+        state = f'{test}? {body}'
+        if orelse:
+            state += f': {orelse}'
+        else:
+            state += f': null'
+        print('IfExp:', state)
+        return state
 
     def convert_Dict(self, nodes):
         keys = self.parse(nodes.keys)
@@ -35,8 +48,15 @@ class Expr(NodeParser):
 
     def convert_Set(self, nodes):
         return ''
+
     def convert_ListComp(self, nodes):
-        return ''
+        elt = self.parse(nodes.elt)
+        print(nodes.elt)
+        generators = ''.join(self.parse(nodes.generators))
+        state = f'[{elt} {generators}]'
+        print('state:', state)
+        return state
+
     def convert_SetComp(self, nodes):
         return ''
     def convert_DictComp(self, nodes):
@@ -50,7 +70,11 @@ class Expr(NodeParser):
     def convert_YieldFrom(self, nodes):
         return ''
     def convert_Compare(self, nodes):
-        return ''
+        left = self.parse(nodes.left)
+        ops = self.parse(nodes.ops)
+        comparators = self.parse(nodes.comparators)
+        state = f'{left} {ops} {comparators}'
+        return state
 
     def convert_Call(self, nodes):
         """
