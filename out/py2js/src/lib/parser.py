@@ -30,10 +30,12 @@ class Parser(object):
         type_name = self.type_string(nodes)
         type_ = type(nodes)
         func = self.symbol_.get(type_)
-        print('[type]', type_name)
+        # print('[type]', type_name)
         if func is None:
             return
         res = func(nodes)
+        if res == '' and nodes is not None:
+            print('res is \'\':', type_name, nodes)
         return res
     
     def set_nodes(self, nodes):

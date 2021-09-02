@@ -17,4 +17,7 @@ def atopy(aString):
     elif re.match(r'range\((\w|\W)+\)', aString):
         anotherString = str(re.sub(r'range\(([\W|\w]+)\)', r'\1', aString))
         data_type = 'range'
+    else:
+        # 一旦保留
+        return aString, 'else'
     return anotherString, data_type

@@ -19,8 +19,20 @@ class Expr(NodeParser):
         return ''
     def convert_IfExp(self, nodes):
         return ''
+
     def convert_Dict(self, nodes):
-        return ''
+        keys = self.parse(nodes.keys)
+        values = self.parse(nodes.values)
+        aDict = dict()
+        remove_quart = lambda aString: aString.replace('\'', '')
+        for anIndex, aKey in enumerate(keys):
+            aDict[remove_quart(aKey)] = remove_quart(values[anIndex])
+        aString = str(aDict)
+        aString = aString.replace('{', '{\n\t')
+        aString = aString.replace(', ', ',\n\t')
+        aString = aString.replace('}', '\n}\n')
+        return aString
+
     def convert_Set(self, nodes):
         return ''
     def convert_ListComp(self, nodes):
@@ -71,7 +83,15 @@ class Expr(NodeParser):
         return '.'.join([value, attr])
 
     def convert_Subscript(self, nodes):
-        return ''
+        """
+        保留
+        """
+        value = self.parse(nodes.value)
+        slice = self.parse(nodes.slice)
+        # print('slice:', slice)
+        state = f'{value}[{str(slice)}]'
+        return state
+
     def convert_Starred(self, nodes):
         return ''
     def convert_Name(self, nodes):

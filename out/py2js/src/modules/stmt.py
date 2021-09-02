@@ -10,7 +10,7 @@ class Stmt(NodeParser):
         name = self.parse(nodes.name)
         args = self.parse(nodes.args)
         body = '\n'.join(self.parse(nodes.body))
-        functinon_statement = f'function {name}({args}){{\n{body}\n}}\n'
+        functinon_statement = f'function {name}({args}) {{\n{body}\n}}\n'
         return functinon_statement
 
     def convert_AsyncFunctionDef(self, nodes):
@@ -69,20 +69,22 @@ class Stmt(NodeParser):
         times, data_type = atopy(iter)
         # orelseはbreakしないでループを抜け出した時のみはっか
 
-        # print('===for===')
-        # print('target:', target)
-        # print('iter:', iter, type(iter), type(nodes.iter))
-        # print('isList', data_type)
-        # print('body:', body)
-        # print('type:', times, data_type)
+        print('===for===')
+        print('target:', target)
+        print('iter:', iter, type(iter), type(nodes.iter))
+        print('isList', data_type)
+        print('body:', body)
+        print('type:', times, data_type)
 
         if data_type == 'list':
             for_statement = f'for(const {target} of {iter}) {{\n{body}\n}}\n'
-        elif data_type == 'dict':
+        elif data_type == 'dict' or data_type == 'else':
             for_statement = f'for(const {target} in {iter}) {{\n{body}\n}}\n'
         elif data_type == 'range':
             # 内部のループに対して[i]を与える処理はまだ実装していない
             for_statement = f'for(let i = 0; i < {times}; i++) {{\n{body}\n}}\n'
+        # else:
+        #     for_statement = f'for(let i = 0; i < {iter}.length; i++) {{\n{body}\n}}\n'
         # enumerate処理未実装
         # 例外処理未実装
         return for_statement
