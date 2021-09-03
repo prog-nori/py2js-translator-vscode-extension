@@ -7,7 +7,7 @@ from src.modules.nodeParser import NodeParser
 class Cmpop(NodeParser):
 
     def convert_Eq(self, nodes):
-        return '='
+        return '=='
 
     def convert_NotEq(self, nodes):
         return '!='

@@ -77,7 +77,7 @@ class Expr(NodeParser):
         state = left
         if len(comparators) == len(ops):
             for idx, aComparator in enumerate(comparators):
-                state += f'{ops[idx]} {aComparator}'
+                state += f' {ops[idx]} {aComparator}'
         return state
 
     def convert_Call(self, nodes):
