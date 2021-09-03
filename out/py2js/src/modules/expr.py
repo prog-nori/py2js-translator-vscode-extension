@@ -22,9 +22,10 @@ class Expr(NodeParser):
         test = self.parse(nodes.test)
         body = ''.join(self.parse(nodes.body))
         orelse = self.parse(nodes.orelse)
-        print('test:', test)
-        print('body:', body)
-        print('orelse:', orelse)
+        # print('typeof:', type(nodes.test))
+        # print('test:', test)
+        # print('body:', body)
+        # print('orelse:', orelse)
         state = f'{test}? {body}'
         if orelse:
             state += f': {orelse}'
@@ -51,10 +52,10 @@ class Expr(NodeParser):
 
     def convert_ListComp(self, nodes):
         elt = self.parse(nodes.elt)
-        print(nodes.elt)
+        self.options.add('elt', elt)
         generators = ''.join(self.parse(nodes.generators))
-        state = f'[{elt} {generators}]'
-        print('state:', state)
+        self.options.remove('elt')
+        state = generators
         return state
 
     def convert_SetComp(self, nodes):
@@ -73,7 +74,10 @@ class Expr(NodeParser):
         left = self.parse(nodes.left)
         ops = self.parse(nodes.ops)
         comparators = self.parse(nodes.comparators)
-        state = f'{left} {ops} {comparators}'
+        state = left
+        if len(comparators) == len(ops):
+            for idx, aComparator in enumerate(comparators):
+                state += f'{ops[idx]} {aComparator}'
         return state
 
     def convert_Call(self, nodes):

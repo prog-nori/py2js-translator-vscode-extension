@@ -13,8 +13,9 @@ class Parser(object):
         """
         self.type_string = lambda aVariable: type(aVariable).__name__
         self.nodes = None
+        self.options = Options()
 
-        self.symbol_ = Symbol(self.parse)
+        self.symbol_ = Symbol(self.parse, self.options)
         return
     
     def get_nodes(self):
@@ -30,12 +31,11 @@ class Parser(object):
         type_name = self.type_string(nodes)
         type_ = type(nodes)
         func = self.symbol_.get(type_)
-        # print('[type]', type_name)
         if func is None:
             return
         res = func(nodes)
-        if res == '' and nodes is not None:
-            print('res is \'\':', type_name, nodes)
+        # if res == '' and nodes is not None:
+        #     print('res is \'\':', type_name, nodes)
         return res
     
     def set_nodes(self, nodes):
@@ -43,3 +43,46 @@ class Parser(object):
         nodesに値をセットする
         """
         self.nodes = nodes
+
+class Options(object):
+    def __init__(self):
+        """
+        オプションを準備する
+        """
+        self.options_ = {}
+    
+    def __str__(self):
+        return str(self.options_)
+    
+    def add(self, key, value):
+        """
+        オプションを追加する
+        """
+        self.options_[key] = value
+    
+    def update(self, key, value):
+        """
+        オプションを更新する。事実上addと一緒
+        """
+        self.add(key, value)
+    
+    def remove(self, key):
+        """
+        オプションを除去する
+        """
+        del self.options_[key]
+    
+    def reset(self):
+        """
+        オプションを初期化する
+        """
+        self.options_ = {}
+    
+    def get(self, key):
+        """
+        オプションを取得する。なければNone
+        """
+        if self.options_[key]:
+            return self.options_[key]
+        else:
+            return None

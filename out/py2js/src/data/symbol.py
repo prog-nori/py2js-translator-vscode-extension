@@ -11,18 +11,20 @@ from src.modules.arguments import Arguments
 from src.modules.arg import Arg
 from src.modules.operator import Operator
 from src.modules.comprehension import Comprehension
+from src.modules.cmpop import Cmpop
 
 class Symbol(object):
 
-    def __init__(self, parser):
-        standard = Standard(parser)
-        mod = Mod(parser)
-        stmt = Stmt(parser)
-        expr = Expr(parser)
-        operator = Operator(parser)
-        arguments = Arguments(parser)
-        arg = Arg(parser)
-        comprehension = Comprehension(parser)
+    def __init__(self, parser, options):
+        standard = Standard(parser, options)
+        mod = Mod(parser, options)
+        stmt = Stmt(parser, options)
+        expr = Expr(parser, options)
+        operator = Operator(parser, options)
+        arguments = Arguments(parser, options)
+        arg = Arg(parser, options)
+        comprehension = Comprehension(parser, options)
+        cmpop = Cmpop(parser, options)
 
         self.symbol_ = {
             # 標準の型
@@ -107,6 +109,16 @@ class Symbol(object):
             ast.FloorDiv: operator.convert_FloorDiv,
             # unaryop系
             # cmpop系
+            ast.Eq: cmpop.convert_Eq,
+            ast.NotEq: cmpop.convert_NotEq,
+            ast.Lt: cmpop.convert_Lt,
+            ast.LtE: cmpop.convert_LtE,
+            ast.Gt: cmpop.convert_Gt,
+            ast.GtE: cmpop.convert_GtE,
+            ast.Is: cmpop.convert_Is,
+            ast.IsNot: cmpop.convert_IsNot,
+            ast.In: cmpop.convert_In,
+            ast.NotIn: cmpop.convert_NotIn,
             # comprehension系
             ast.comprehension: comprehension.convert_comprehension,
             # excepthandler系
