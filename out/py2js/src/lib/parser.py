@@ -82,7 +82,7 @@ class Options(object):
         """
         オプションを取得する。なければNone
         """
-        if self.options_[key]:
+        if key in self.options_:
             return self.options_[key]
         else:
             return None

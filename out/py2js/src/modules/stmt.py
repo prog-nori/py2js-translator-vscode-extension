@@ -10,7 +10,14 @@ class Stmt(NodeParser):
         name = self.parse(nodes.name)
         args = self.parse(nodes.args)
         body = '\n'.join(self.parse(nodes.body))
-        functinon_statement = f'function {name}({args}) {{\n{body}\n}}\n'
+        functinon_statement = ''
+        if self.options.get('in-class'):
+            if name == '__init__':
+                functinon_statement = f'constructor({args}) {{\n{body}\n}}\n'
+            else:
+                functinon_statement = f'{name}({args}) {{\n{body}\n}}\n'
+        else:
+            functinon_statement = f'function {name}({args}) {{\n{body}\n}}\n'
         return functinon_statement
 
     def convert_AsyncFunctionDef(self, nodes):
@@ -18,9 +25,11 @@ class Stmt(NodeParser):
 
     def convert_ClassDef(self, nodes):
         name = self.parse(nodes.name)
+        self.options.add('in-class', True)
         bases_ = self.parse(nodes.bases)
         bases = bases_[0] if len(bases_) > 0 else ''
         body = '\n'.join(self.parse(nodes.body))
+        self.options.remove('in-class')
         result = ''
         if len(bases) > 0:
             result = 'class {} extends {} {{\n{}}}\n'.format(name, bases, body)
