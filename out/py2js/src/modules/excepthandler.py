@@ -9,6 +9,5 @@ class ExceptHandler(NodeParser):
         handler = f'{exception} {name}' if name else exception
         state = f"""}} catch({handler}) {{
     {body}
-}}
-"""
+}}"""
         return state

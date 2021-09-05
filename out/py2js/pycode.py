@@ -28,10 +28,34 @@ class Example:
     def do_try(self):
         a = 0
         b = 1
+        print('try-catch')
         try:
             print(a / b)
         except Exception as e:
             print(e)
+        print('try-catch-finally')
+        try:
+            print(a / b)
+        except Exception as e:
+            print(e)
+        finally:
+            print('ファイナリー')
+        print('try-catch-else')
+        try:
+            print(a / b)
+        except Exception as e:
+            print(e)
+        else:
+            print('else')
+        print('try-catch-else-finally')
+        try:
+            print(a / b)
+        except Exception as e:
+            print(e)
+        else:
+            print('else')
+        finally:
+            print('finally')
     
     # 追加
     def hello_world(self):
