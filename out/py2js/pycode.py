@@ -23,6 +23,15 @@ class Example:
         for k in aDict:
             print(aDict[k])
         self.f(1, 2, 3, 4, 5)
+        self.do_try()
+    
+    def do_try(self):
+        a = 0
+        b = 1
+        try:
+            print(a / b)
+        except Exception as e:
+            print(e)
     
     # 追加
     def hello_world(self):

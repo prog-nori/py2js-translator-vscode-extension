@@ -12,6 +12,7 @@ from src.modules.arg import Arg
 from src.modules.operator import Operator
 from src.modules.comprehension import Comprehension
 from src.modules.cmpop import Cmpop
+from src.modules.excepthandler import ExceptHandler
 
 class Symbol(object):
 
@@ -25,6 +26,7 @@ class Symbol(object):
         arg = Arg(parser, options)
         comprehension = Comprehension(parser, options)
         cmpop = Cmpop(parser, options)
+        exceptionHandler = ExceptHandler(parser, options)
 
         self.symbol_ = {
             # 標準の型
@@ -122,6 +124,7 @@ class Symbol(object):
             # comprehension系
             ast.comprehension: comprehension.convert_comprehension,
             # excepthandler系
+            ast.ExceptHandler: exceptionHandler.convert_ExceptHandler,
             # arguments系
             ast.arguments: arguments.convert_Arguments,
             # arg系

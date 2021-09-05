@@ -1,0 +1,14 @@
+#! /usr/bin/env python3
+#! -*- coding: utf-8 -*-
+from src.modules.nodeParser import NodeParser
+class ExceptHandler(NodeParser):
+    def convert_ExceptHandler(self, nodes):
+        exception = self.parse(nodes.type)
+        name = self.parse(nodes.name)
+        body = ''.join(self.parse(nodes.body))
+        handler = f'{exception} {name}' if name else exception
+        state = f"""}} catch({handler}) {{
+    {body}
+}}
+"""
+        return state

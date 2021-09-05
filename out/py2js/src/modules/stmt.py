@@ -128,7 +128,24 @@ class Stmt(NodeParser):
         return ''
 
     def convert_Try(self, nodes):
-        return ''
+        orelse = self.parse(nodes.orelse)
+        has_orelse = True if orelse else False
+        body = ''.join(self.parse(nodes.body))
+        handlers = ''.join(self.parse(nodes.handlers))
+        finalbody = self.parse(nodes.finalbody)
+        try_catch = f"""try{{
+    {body}
+{handlers}"""
+        # state = ''
+        # if has_orelse:
+        #     state = 'let success = true'
+        # state += f'try{{\n{body}'
+        # if handlers:
+        #     pass
+        # else:
+        #     state += f'}}\n'
+        state = try_catch
+        return state
 
     def convert_Assert(self, nodes):
         return ''
