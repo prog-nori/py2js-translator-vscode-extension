@@ -141,15 +141,15 @@ class Stmt(NodeParser):
         if has_orelse:
             if has_finally:
                 state = f"""try{{
-        let success = true
-        {try_catch}
-        if(success){{
-            {orelse}
-        }}
-    }}finally{{
-        {finalbody}
+    let success = true
+    {try_catch}
+    if(success){{
+        {orelse}
     }}
-    """
+}}finally{{
+    {finalbody}
+}}
+"""
             else:
                 state = f"""try{{
     let success = true
@@ -164,15 +164,6 @@ class Stmt(NodeParser):
                 state = f'{try_catch}finally{{\n{finalbody}\n}}\n'
             else:
                 state = try_catch
-        # state = ''
-        # if has_orelse:
-        #     state = 'let success = true'
-        # state += f'try{{\n{body}'
-        # if handlers:
-        #     pass
-        # else:
-        #     state += f'}}\n'
-        # state = try_catch
         return state
 
     def convert_Assert(self, nodes):
