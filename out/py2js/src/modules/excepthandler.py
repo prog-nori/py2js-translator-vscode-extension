@@ -6,8 +6,9 @@ class ExceptHandler(NodeParser):
         exception = self.parse(nodes.type)
         name = self.parse(nodes.name)
         body = ''.join(self.parse(nodes.body))
+        inner_state = f'success = false\n{body}' if self.options.get('else') is True else body
         handler = f'{exception} {name}' if name else exception
         state = f"""}} catch({handler}) {{
-    {body}
+    {inner_state}
 }}"""
         return state

@@ -31,7 +31,6 @@ class Expr(NodeParser):
             state += f': {orelse}'
         else:
             state += f': null'
-        print('IfExp:', state)
         return state
 
     def convert_Dict(self, nodes):
