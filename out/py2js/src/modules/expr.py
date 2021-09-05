@@ -88,6 +88,7 @@ class Expr(NodeParser):
         args = self.parse(nodes.args)
         keywords = self.parse(nodes.keywords)
         arguments = ', '.join(args)
+        func = 'console.log' if func == 'print' else func
         result = f'{func}({arguments})'
         return result
 
