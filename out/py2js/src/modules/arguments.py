@@ -16,22 +16,23 @@ class Arguments(NodeParser):
                     result.append(item)
         else:
             result = aList
+        if result != []:
+            result = [f'let {arg}' for arg in list(filter(lambda x: x != '\'\'', result))]
         return result
+
     def convert_Arguments(self, nodes):
-        args = self.parse(nodes.args)
+        args = list(filter(lambda aString: aString != 'self', self.parse(nodes.args)))
         defaults = self.parse(nodes.defaults)
-        kw_defaults = self.parse(nodes.kw_defaults)
+        # kw_defaults = self.parse(nodes.kw_defaults)
         kwarg = self.parse(nodes.kwarg)
         kwonlyargs = self.parse(nodes.kwonlyargs)
         vararg = self.parse(nodes.vararg)
-        # print('[args]', args, defaults, kw_defaults, kwarg, kwonlyargs, vararg)
-        # print('[args]', type(args), type(defaults), type(kw_defaults), type(kwarg), type(kwonlyargs), type(vararg))
-        # print(''.join(self._get_flat_list([args, defaults, kw_defaults, kwarg, kwonlyargs, vararg])))
-        aList = list(filter(lambda x: x not in [None, [], ''], [args, defaults, kw_defaults, kwarg, kwonlyargs, vararg]))
 
-        # 仮の姿。まだやることはたくさんある
-        # ・キーワード
-        # ・可変長
-        # ・初期値
-        # ・self処理等
+        aList = []
+        defaults.reverse()
+        for idx, elem in enumerate(defaults):
+            own = args[len(args) - (idx + 1)]
+            args[len(args) - (idx + 1)] = '{}={}'.format(own, elem)
+        aList.extend(args)
+        aList = list(filter(lambda x: x not in [None, [], ''], [*args, kwarg, kwonlyargs, vararg]))
         return ', '.join(self._get_flat_list(aList))
