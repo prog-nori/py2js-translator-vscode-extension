@@ -88,7 +88,8 @@ class Expr(NodeParser):
         keywords = self.parse(nodes.keywords)
         arguments = ', '.join(args)
         func = 'console.log' if func == 'print' else func
-        result = f'{func}({arguments})'
+        new = 'new ' if func.istitle() else ''
+        result = f'{new}{func}({arguments})'
         return result
 
     def convert_FormattedValue(self, nodes):

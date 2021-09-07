@@ -115,7 +115,7 @@ class Stmt(NodeParser):
         orelse = self.parse(nodes.body)
         if_statement = f'if({test}) {{\n{body}\n}}\n'
         if test == '__name__ == \'__main__\'':
-            return None
+            return body
         return if_statement
 
     def convert_With(self, nodes):

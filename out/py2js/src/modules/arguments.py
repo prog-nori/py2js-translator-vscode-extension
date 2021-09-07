@@ -17,7 +17,7 @@ class Arguments(NodeParser):
         else:
             result = aList
         if result != []:
-            result = [f'let {arg}' for arg in list(filter(lambda x: x != '\'\'', result))]
+            result = [arg for arg in list(filter(lambda x: x != '\'\'', result))]
         return result
 
     def convert_Arguments(self, nodes):
