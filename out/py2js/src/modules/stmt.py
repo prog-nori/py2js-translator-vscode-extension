@@ -141,6 +141,7 @@ class Stmt(NodeParser):
 {handlers}"""
         if has_orelse:
             if has_finally:
+                # try-catch-else-finally
                 state = f"""try{{
     let success = true
     {try_catch}
@@ -152,18 +153,14 @@ class Stmt(NodeParser):
 }}
 """
             else:
-                state = f"""try{{
-    let success = true
-    {try_catch}
-    if(success){{
-        {orelse}
-    }}
-}}
-        """
+                # try-catch-else
+                state = f"""let success = true\n{try_catch}\nif(success){{\n{orelse}\n}}"""
         else:
             if has_finally:
+                # try-catch-finally
                 state = f'{try_catch}finally{{\n{finalbody}\n}}\n'
             else:
+                # try-catch
                 state = try_catch
         self.options.remove('else')
         return state
