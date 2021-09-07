@@ -109,7 +109,10 @@ class Expr(NodeParser):
     def convert_Attribute(self, nodes):
         value = self.parse(nodes.value)
         attr = self.parse(nodes.attr)
-        return '.'.join([value, attr])
+        if value == 'self':
+            return '.'.join(['this', attr])
+        else:
+            return '.'.join([value, attr])
 
     def convert_Subscript(self, nodes):
         """
