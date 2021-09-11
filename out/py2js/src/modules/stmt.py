@@ -122,7 +122,7 @@ class Stmt(NodeParser):
         self.indent.increment()
         body = self.body_joiner(self.parse(nodes.body), self.indent)
         self.indent.decrement()
-        oelese = self.parse(nodes.orelse)
+        # orelse = self.parse(nodes.orelse)
         # orelseはまだ実装しない
         while_statement = f'while({test}) {{\n{body}\n'
         while_statement += f'{self.indent.get()}}}\n'
@@ -131,11 +131,29 @@ class Stmt(NodeParser):
     def convert_If(self, nodes):
         test = self.parse(nodes.test)
         body = '\n'.join(self.parse(nodes.body))
-        orelse = self.parse(nodes.body)
-        if_statement = f'if({test}) {{\n{body}\n}}\n'
+        orelse = self.parse(nodes.orelse)
+        aList = list()
+        anIndent = lambda: self.indent.get()
+        aList.append(f'if({test}){{')
+        self.indent.increment()
+        aList.append(f'{anIndent()}{body}')
+        self.indent.decrement()
         if test == '__name__ == \'__main__\'':
             return body
-        return if_statement
+        if not orelse == []:
+            else_state = ''.join(orelse)
+            if orelse[0][:2] == 'if':
+                aList.append(f'{anIndent()}}} else {else_state}')
+            else:
+                aList.append(f'{anIndent()}}} else {{')
+                self.indent.increment()
+                aList.append(f'{anIndent()}{else_state}')
+                self.indent.decrement()
+                aList.append(f'{anIndent()}}}')
+        else:
+            aList.append(f'{anIndent()}}}')
+        state = '\n'.join(aList)
+        return state
 
     def convert_With(self, nodes):
         return ''

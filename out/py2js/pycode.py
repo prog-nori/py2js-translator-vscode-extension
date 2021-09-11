@@ -73,6 +73,19 @@ class Example:
         return aString == anotherString
     
     def f(self, a, b=2, *c, **d):
+        if a > b:
+            print(1)
+        elif a == b:
+            print(2)
+        elif a == d:
+            print(2.5)
+        else:
+            print(3)
+        
+        if c == d:
+            print(4)
+        else:
+            print(5)
         while b > 0:
             if a > b:
                 print(1)
