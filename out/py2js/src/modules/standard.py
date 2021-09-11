@@ -8,7 +8,7 @@ class Standard(NodeParser):
         for item in nodes:
             parsed = self.parse(item)
             if parsed is not None:
-                result.append(self.parse(item))
+                result.append(parsed)
         return result
 
     def convert_Dict(self, nodes):

@@ -16,18 +16,20 @@ from src.modules.excepthandler import ExceptHandler
 
 class Symbol(object):
 
-    def __init__(self, parser, options):
-        standard = Standard(parser, options)
-        mod = Mod(parser, options)
-        stmt = Stmt(parser, options)
-        expr = Expr(parser, options)
-        operator = Operator(parser, options)
-        arguments = Arguments(parser, options)
-        arg = Arg(parser, options)
-        comprehension = Comprehension(parser, options)
-        cmpop = Cmpop(parser, options)
-        exceptionHandler = ExceptHandler(parser, options)
+    def __init__(self, parser, options, indent):
+        args = (parser, options, indent)
+        standard = Standard(*args)
+        mod = Mod(*args)
+        stmt = Stmt(*args)
+        expr = Expr(*args)
+        operator = Operator(*args)
+        arguments = Arguments(*args)
+        arg = Arg(*args)
+        comprehension = Comprehension(*args)
+        cmpop = Cmpop(*args)
+        exceptionHandler = ExceptHandler(*args)
 
+        self.indent = indent
         self.symbol_ = {
             # 標準の型
             list: standard.convert_List,

@@ -9,32 +9,39 @@ class Stmt(NodeParser):
     def convert_FunctionDef(self, nodes):
         name = self.parse(nodes.name)
         args = self.parse(nodes.args)
-        body = '\n'.join(self.parse(nodes.body))
+        self.indent.increment()
+        body = self.body_joiner(self.parse(nodes.body), self.indent)
+        self.indent.decrement()
         functinon_statement = ''
+        anIndent = lambda: self.indent.get()
         if self.options.get('in-class'):
             if name == '__init__':
-                functinon_statement = f'constructor({args}) {{\n{body}\n}}\n'
+                functinon_statement = f'constructor({args}) {{\n{body}\n'
             else:
-                functinon_statement = f'{name}({args}) {{\n{body}\n}}\n'
+                functinon_statement = f'{name}({args}) {{\n{body}\n'
         else:
-            functinon_statement = f'function {name}({args}) {{\n{body}\n}}\n'
+            functinon_statement = f'function {name}({args}) {{\n{body}\n'
+        functinon_statement += f'{anIndent()}}}\n'
         return functinon_statement
 
     def convert_AsyncFunctionDef(self, nodes):
-        return f'async {self.convert_FunctionDef(nodes, self.parse)}'
+        return f'{self.indent.get()}async {self.convert_FunctionDef(nodes, self.parse)}'
 
     def convert_ClassDef(self, nodes):
         name = self.parse(nodes.name)
         self.options.add('in-class', True)
         bases_ = self.parse(nodes.bases)
         bases = bases_[0] if len(bases_) > 0 else ''
-        body = '\n'.join(self.parse(nodes.body))
+        self.indent.increment()
+        body = self.body_joiner(self.parse(nodes.body), self.indent)
+        self.indent.decrement()
         self.options.remove('in-class')
+        anIndent = lambda: self.indent.get()
         result = ''
         if len(bases) > 0:
-            result = 'class {} extends {} {{\n{}}}\n'.format(name, bases, body)
+            result = f'{anIndent()}class {name} extends {bases} {{\n{body}}}\n'
         else:
-            result = 'class {} {{\n{}}}\n'.format(name, body)
+            result = f'{anIndent()}class {name} {{\n{body}}}\n'
         return result
 
     def convert_Return(self, nodes):
@@ -72,7 +79,9 @@ class Stmt(NodeParser):
         """
         target = self.parse(nodes.target)
         iter = self.parse(nodes.iter)
-        body = '\n'.join(self.parse(nodes.body))
+        self.indent.increment()
+        body = self.body_joiner(self.parse(nodes.body), self.indent)
+        self.indent.decrement()
         orelse = self.parse(nodes.orelse)
         for_statement = ''
         times, data_type = atopy(iter)
@@ -85,13 +94,20 @@ class Stmt(NodeParser):
         # print('body:', body)
         # print('type:', times, data_type)
 
+        done = False
         if data_type == 'list':
-            for_statement = f'for(const {target} of {iter}) {{\n{body}\n}}\n'
+            for_statement = f'for(const {target} of {iter}) {{\n{body}\n'
+            done = True
         elif data_type == 'dict' or data_type == 'else':
-            for_statement = f'for(const {target} in {iter}) {{\n{body}\n}}\n'
+            for_statement = f'for(const {target} in {iter}) {{\n{body}\n'
+            done = True
         elif data_type == 'range':
             # 内部のループに対して[i]を与える処理はまだ実装していない
-            for_statement = f'for(let i = 0; i < {times}; i++) {{\n{body}\n}}\n'
+            for_statement = f'for(let i = 0; i < {times}; i++) {{\n{body}\n'
+            done = True
+        
+        if done:
+            for_statement += f'{self.indent.get()}}}\n'
         # else:
         #     for_statement = f'for(let i = 0; i < {iter}.length; i++) {{\n{body}\n}}\n'
         # enumerate処理未実装
@@ -103,10 +119,13 @@ class Stmt(NodeParser):
 
     def convert_While(self, nodes):
         test = self.parse(nodes.test)
-        body = '\n'.join(self.parse(nodes.body))
+        self.indent.increment()
+        body = self.body_joiner(self.parse(nodes.body), self.indent)
+        self.indent.decrement()
         oelese = self.parse(nodes.orelse)
         # orelseはまだ実装しない
-        while_statement = f'while({test}) {{\n{body}\n}}\n'
+        while_statement = f'while({test}) {{\n{body}\n'
+        while_statement += f'{self.indent.get()}}}\n'
         return while_statement
 
     def convert_If(self, nodes):
@@ -131,37 +150,77 @@ class Stmt(NodeParser):
         orelse = ''.join(self.parse(nodes.orelse))
         has_orelse = True if orelse != '' else False
         self.options.add('else', has_orelse)
-        body = ''.join(self.parse(nodes.body))
-        handlers = ''.join(self.parse(nodes.handlers))
-        finalbody = ''.join(self.parse(nodes.finalbody))
-        has_finally = bool(finalbody != '')
+        self.indent.increment()
+        finalbody = lambda: self.body_joiner(self.parse(nodes.finalbody), self.indent)
+        self.indent.decrement()
+        handlers = lambda: ''.join(self.parse(nodes.handlers))
+        has_finally = bool(finalbody() != '')
         state = ''
-        try_catch = f"""try{{
-    {body}
-{handlers}"""
+        anIndent = lambda: self.indent.get()
+
+        def get_try_catch():
+            """
+            try-catchを作る
+            """
+            self.indent.increment()
+            body = self.body_joiner(self.parse(nodes.body), self.indent)
+            self.indent.decrement()
+            aList = list()
+            aList.append(f'try {{')
+            aList.append(f'{body}')
+            aList.append(f'{handlers()}')
+            return '\n'.join(aList)
+
         if has_orelse:
             if has_finally:
                 # try-catch-else-finally
-                state = f"""try{{
-    let success = true
-    {try_catch}
-    if(success){{
-        {orelse}
-    }}
-}}finally{{
-    {finalbody}
-}}
-"""
+                try_catch_else_finally = list()
+                try_catch_else_finally.append(f'try{{')
+                self.indent.increment()
+                try_catch_else_finally.append(f'{anIndent()}let success = true')
+                try_catch_else_finally.append(f'{anIndent()}{get_try_catch()}')
+                try_catch_else_finally.append(f'{anIndent()}if(success){{')
+                self.indent.increment()
+                try_catch_else_finally.append(f'{anIndent()}{orelse}')
+                self.indent.decrement()
+                try_catch_else_finally.append(f'{anIndent()}}}')
+                self.indent.decrement()
+                try_catch_else_finally.append(f'{anIndent()}}}\n')
+                try_catch_else_finally.append(f'{anIndent()}}} finally {{')
+                self.indent.increment()
+                try_catch_else_finally.append(f'{finalbody()}')
+                self.indent.decrement()
+                try_catch_else_finally.append(f'{anIndent()}}}\n')
+                state = '\n'.join(try_catch_else_finally)
             else:
                 # try-catch-else
-                state = f"""let success = true\n{try_catch}\nif(success){{\n{orelse}\n}}"""
+                try_catch_else = list()
+                try_catch_else.append(f'let success = true')
+                try_catch_else.append(f'{anIndent()}{get_try_catch()}')
+                try_catch_else.append(f'{anIndent()}}}')
+                try_catch_else.append(f'{anIndent()}if(success){{')
+                self.indent.increment()
+                try_catch_else.append(f'{anIndent()}{orelse}')
+                self.indent.decrement()
+                try_catch_else.append(f'{anIndent()}}}')
+                state = '\n'.join(try_catch_else)
         else:
             if has_finally:
                 # try-catch-finally
-                state = f'{try_catch}finally{{\n{finalbody}\n}}\n'
+                try_catch_finally = list()
+                try_catch_finally.append(get_try_catch())
+                try_catch_finally.append(f'{anIndent()}}} finally {{')
+                self.indent.increment()
+                try_catch_finally.append(f'{finalbody()}')
+                self.indent.decrement()
+                try_catch_finally.append(f'{anIndent()}}}\n')
+                state = '\n'.join(try_catch_finally)
             else:
                 # try-catch
-                state = try_catch
+                try_catch = list()
+                try_catch.append(get_try_catch())
+                try_catch.append(f'{anIndent()}}}\n')
+                state = '\n'.join(try_catch)
         self.options.remove('else')
         return state
 

@@ -14,8 +14,9 @@ class Parser(object):
         self.type_string = lambda aVariable: type(aVariable).__name__
         self.nodes = None
         self.options = Options()
+        self.indent = Indent()
 
-        self.symbol_ = Symbol(self.parse, self.options)
+        self.symbol_ = Symbol(self.parse, self.options, self.indent)
         return
     
     def get_nodes(self):
@@ -86,3 +87,17 @@ class Options(object):
             return self.options_[key]
         else:
             return None
+
+class Indent:
+    def __init__(self):
+        self.indent_ = 0
+    
+    def increment(self):
+        self.indent_ += 1
+    
+    def decrement(self):
+        self.indent_ -= 1
+    
+    def get(self):
+        aList = ['\t' for _ in range(self.indent_)]
+        return ''.join(aList)

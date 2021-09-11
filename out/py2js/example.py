@@ -10,7 +10,7 @@ def main():
         translator = Py2JS(tree)
         # translator.print()
         result = translator.run()
-        print('== result ==')
+        print('// == result ==')
         print(result)
     return
 

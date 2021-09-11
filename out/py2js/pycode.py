@@ -74,7 +74,17 @@ class Example:
     
     def f(self, a, b=2, *c, **d):
         while b > 0:
-            print(b)
+            if a > b:
+                print(1)
+            elif a == b:
+                print(2)
+            else:
+                print(3)
+            
+            if c == d:
+                print(4)
+            else:
+                print(5)
             b -= 1
         return
 

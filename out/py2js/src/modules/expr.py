@@ -5,29 +5,30 @@ from src.modules.nodeParser import NodeParser
 class Expr(NodeParser):
     def convert_BoolOp(self, nodes):
         return ''
+
     def convert_NamedExpr(self, nodes):
         return ''
+
     def convert_BinOp(self, nodes):
         left = self.parse(nodes.left)
         op = self.parse(nodes.op)
         right = self.parse(nodes.right)
         binOp_statement = f'{left} {op} {right}'
         return binOp_statement
+
     def convert_UnaryOp(self, nodes):
         return ''
+
     def convert_Lambda(self, nodes):
         return ''
 
     def convert_IfExp(self, nodes):
         test = self.parse(nodes.test)
         body = ''.join(self.parse(nodes.body))
-        orelse = self.parse(nodes.orelse)
-        # print('typeof:', type(nodes.test))
-        # print('test:', test)
-        # print('body:', body)
-        # print('orelse:', orelse)
+        # orelse = self.parse(nodes.orelse)
         state = f'{test}? {body}'
-        if orelse:
+        # if orelse:
+        if orelse := self.parse(nodes.orelse):
             state += f': {orelse}'
         else:
             state += f': null'
@@ -41,9 +42,11 @@ class Expr(NodeParser):
         for anIndex, aKey in enumerate(keys):
             aDict[remove_quart(aKey)] = remove_quart(values[anIndex])
         aString = str(aDict)
-        aString = aString.replace('{', '{\n\t')
-        aString = aString.replace(', ', ',\n\t')
-        aString = aString.replace('}', '\n}\n')
+        self.indent.increment()
+        aString = aString.replace('{', f'{{\n{self.indent.get()}')
+        aString = aString.replace(', ', f',\n{self.indent.get()}')
+        self.indent.decrement()
+        aString = aString.replace('}', f'\n{self.indent.get()}}}\n')
         return aString
 
     def convert_Set(self, nodes):
@@ -59,16 +62,22 @@ class Expr(NodeParser):
 
     def convert_SetComp(self, nodes):
         return ''
+
     def convert_DictComp(self, nodes):
         return ''
+
     def convert_GeneratorExp(self, nodes):
         return ''
+
     def convert_Await(self, nodes):
         return ''
+
     def convert_Yield(self, nodes):
         return ''
+
     def convert_YieldFrom(self, nodes):
         return ''
+
     def convert_Compare(self, nodes):
         left = self.parse(nodes.left)
         ops = self.parse(nodes.ops)
@@ -120,7 +129,6 @@ class Expr(NodeParser):
         """
         value = self.parse(nodes.value)
         slice = self.parse(nodes.slice)
-        # print('slice:', slice)
         state = f'{value}[{str(slice)}]'
         return state
 
