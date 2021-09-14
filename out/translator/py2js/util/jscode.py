@@ -25,11 +25,23 @@ class JsCode(object):
     def add(self, aLine: Union[str, list]) -> None:
         if isinstance(aLine, list):
             for item in aLine:
+                # print(item)
                 aString = self.setIndent(item)
-                self._code_list.append(aString)
+                # print('type|', type(aString), aString)
+                if isinstance(aString, str):
+                    # print('STR', aString)
+                    self._code_list.append(aString)
+                elif isinstance(aString, list):
+                    # print('aList')
+                    aChild = self.add(aString)
+                    # print('child:', aChild)
+                    self._code_list.append(aChild)
         else:
             aString = self.setIndent(aLine)
             self._code_list.append(f'{aString}')
+        # print('/*** start ***/')
+        # print(self.get())
+        # print('/***  end  ***/')
         return
     
     def addln(self, aLine: Union[str, list]) -> None:

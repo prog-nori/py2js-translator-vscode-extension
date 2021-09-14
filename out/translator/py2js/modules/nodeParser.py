@@ -15,6 +15,21 @@ class NodeParser(object):
         self.recursional_function = the_function
         self.nodes = None
         return
+    
+    def _get_flat_list(self, aList):
+        """
+        多重リストを平坦化する
+        """
+        result = []
+        if isinstance(aList, list):
+            for item in aList:
+                if isinstance(item, list):
+                    result.extend(self._get_flat_list(item))
+                else:
+                    result.append(item)
+        else:
+            result = aList
+        return result
 
     def set_nodes(self, nodes):
         """
@@ -38,6 +53,8 @@ class NodeParser(object):
                         anotherList = []
                         for grand_child in item:
                             anotherList.append(self.recursional_function(grand_child))
+                        print('ANOTHER_LIST:')
+                        print(anotherList, type(anotherList))
                         aList.append(anotherList)
                     else:
                         # print(2, item)

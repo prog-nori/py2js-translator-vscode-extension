@@ -15,21 +15,6 @@ class Arguments(NodeParser):
     #     }
     #     return
 
-    def _get_flat_list(self, aList):
-        """
-        多重リストを平坦化する
-        """
-        result = []
-        if isinstance(aList, list):
-            for item in aList:
-                if isinstance(item, list):
-                    result.extend(self._get_flat_list(item))
-                else:
-                    result.append(item)
-        else:
-            result = aList
-        return result
-
     def convert_Arguments(self):
         jscode: JsCode = JsCode()
         args, vararg, kwonlyargs, kw_defaults, kwarg, defaults = self.parseNodes(
@@ -60,7 +45,7 @@ class Arguments(NodeParser):
         aList = list(filter(lambda x: not str(x) == 'self', aList))
         # print('aLIST:', aList)
         jscode.add(', '.join(aList))
-        print('jscode:', jscode)
+        # print('jscode:', jscode)
 
         # _args = v.get('args', [])
         # _vararg = v.get('vararg', [])

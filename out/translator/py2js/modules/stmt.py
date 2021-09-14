@@ -26,17 +26,21 @@ class Stmt(NodeParser):
         args = self.recursional_function(_args)
         print('さいき')
         body = self.recursional_function(_body)
+        print('\(・∀・)/')
+        print(_name)
+        print(_args)
+        print(_body)
 
         print('=== function def ===')
         print('Name:', name, type(name))
         print('Args:', args, type(args))
         print('Body:', body, type(body))
-        for aContent in body:
-            print('>', aContent)
-        for aContent in name:
-            print('>>', aContent)
-        for aContent in args:
-            print('>>>', aContent)
+        # for aContent in body:
+        #     print('>', aContent)
+        # for aContent in name:
+        #     print('>>', aContent)
+        # for aContent in args:
+        #     print('>>>', aContent)
 
         # args = self.func(v.get('args'), {'list': True})
         # aList = list(filter(lambda x: x not in ['null'], args.get()))
@@ -67,11 +71,17 @@ class Stmt(NodeParser):
         jscode: JsCode = JsCode()
         # print(self.nodes, type(self.nodes))
         _name, _bases, _body = self.parseNodes('name', 'bases', 'body')
+        print('\(・ω・)/')
+        print(_name)
+        print(_bases)
+        print(_body)
         name = self.recursional_function(_name)
         bases = self.recursional_function(_bases)
         body = self.recursional_function(_body)
 
         print('=== ClassDef ===')
+        print(_name, _bases, _body)
+        # print(name.__dict__)
         print('Name:', name, type(name))
         print('Bases:', bases, type(bases))
         print('Body:', body, type(body))
@@ -273,9 +283,11 @@ class Stmt(NodeParser):
         jscode: JsCode = JsCode()
         print(self.nodes.__dict__)
         value = self.recursional_function('value')
-        for item in value:
-            print('val:', item)
-        jscode.add(value)
+        # for item in value:
+        #     print('val:', item)
+        val = self._get_flat_list(value)
+        print('[value] ', type(val), val)
+        jscode.add(self._get_flat_list(value))
         # _value = v.get('value')
         # if _value is not None:
         #     value = self.func(_value)

@@ -2,6 +2,7 @@
 #! -*- coding:utf-8 -*-
 
 import ast
+import inspect
 from py2js.modules.mod import Mod
 from py2js.modules.stmt import Stmt
 from py2js.modules.expr import Expr
@@ -10,6 +11,7 @@ from py2js.modules.arguments import Arguments
 from py2js.modules.arg import Arg
 from py2js.modules.cmpop import Cmpop
 from py2js.modules.operator import Operator
+from py2js.util.jscode import JsCode
 
 class Translator:
     def __init__(self, abstract_tree):
@@ -162,10 +164,32 @@ class Translator:
             },
         ]
         return
+    
+    def get_ast_attributes(self, anObject):
+        """
+        渡されたanObject(type: ast.HogeHoge)の持つ属性(キー)を取得し、
+        配列(Array<string>)として返す
+        """
+        classObject = anObject.__class__
+        members = inspect.getmembers(classObject)
+        keys = classObject.__dict__.keys()
+        aDict = dict()
+        for item in members:
+            if item[0] not in keys and not item[0][0] == '_':
+                aDict[item[0]] = item[1]
+        result = list(aDict.keys())
+        return result
 
     def parse(self, nodes):
         # result = None
-        print(nodes)
+        if type(nodes) in [str, list, dict, int]:
+            print(f'[{type(nodes)}]', nodes)
+        else:
+            print('\%\%\%\%\%\%')
+            fields = self.get_ast_attributes(nodes)
+            print(f'|fields| := {fields}')
+            # print(inspect.getmembers(nodes.__class__))
+            # print(f'[{type(nodes)}]', nodes.__class__.__dict__)
         ifTrueThen = lambda theClass, theFunction: theFunction() if isinstance(nodes, theClass) else None
         self.mod.set_nodes(nodes)
         self.stmt.set_nodes(nodes)
@@ -177,11 +201,22 @@ class Translator:
 
         for aSymbol in self.synbols:
             response = ifTrueThen(aSymbol.get('type'), aSymbol.get('function'))
-            aList.append(response)
-        aList = list(filter(lambda x: x is not None, aList))
+            if isinstance(response, JsCode):
+                aList.append(str(response))
+        # print('中間:')
+        # print(aList)
+        # print('^^^^')
+        # aList = list(filter(lambda x: x is not None, aList))
         # for anItem in aList:
         #     if anItem is not None:
         #         return anItem
+        # print('[list]', aList)
+        res = ''.join([str(item) for item in aList])
+        # print('[res]', res)
+        if len(aList) >= 1:
+            return ''.join([str(item) for item in aList])
+        # print('aList:')
+        # print(aList)
         return aList
     
     def run(self):
