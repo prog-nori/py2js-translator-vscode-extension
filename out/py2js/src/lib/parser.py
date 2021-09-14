@@ -15,8 +15,9 @@ class Parser(object):
         self.nodes = None
         self.options = Options()
         self.indent = Indent()
+        self.paths = PathList()
 
-        self.symbol_ = Symbol(self.parse, self.options, self.indent)
+        self.symbol_ = Symbol(self.parse, self.options, self.indent, self.paths)
         return
     
     def get_nodes(self):
@@ -101,3 +102,39 @@ class Indent:
     def get(self):
         aList = ['\t' for _ in range(self.indent_)]
         return ''.join(aList)
+    
+# class PathList(list):
+#     def __init__(self):
+#         super().__init__()
+#         self.current = ''
+
+#     def find(self, aString):
+#         return aString in self
+    
+#     def rewrite(self, aPath):
+#         self.current = aPath
+    
+#     def 
+
+class PathList:
+    def __init__(self):
+        self.list_ = list()
+        self.current_ = ''
+    
+    def put(self, aString):
+        """
+        カレントを初期化する
+        """
+        self.current_ = aString
+    
+    def append(self, aString):
+        """
+        新しいパスを結合する
+        """
+        self.current_ = '.'.join(self.current_, aString)
+    
+    def cd_prev(self):
+        """
+        1つ上の階層に戻る
+        """
+        self.current_ = '.'.join(self.current_.split('.')[:-1])

@@ -104,7 +104,10 @@ class Example:
 def aFunction():
     a = 5
     b = a - 1
-    print(b)
+    anotherFunction(b)
+
+def anotherFunction(x):
+    print(x)
 
 if __name__ == '__main__':
     example = Example()

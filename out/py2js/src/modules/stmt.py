@@ -61,7 +61,7 @@ class Stmt(NodeParser):
         theTarget = ' = '.join(targets)
         value = self.parse(nodes.value)
         # print(targets, value, ':', ' = '.join(targets), '=', value)
-        return ' = '.join([theTarget, value])
+        return 'let ' + ' = '.join([theTarget, value])
 
     def convert_AugAssign(self, nodes):
         target = self.parse(nodes.target)

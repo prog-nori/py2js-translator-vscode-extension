@@ -16,8 +16,8 @@ from src.modules.excepthandler import ExceptHandler
 
 class Symbol(object):
 
-    def __init__(self, parser, options, indent):
-        args = (parser, options, indent)
+    def __init__(self, parser, options, indent, paths):
+        args = (parser, options, indent, paths)
         standard = Standard(*args)
         mod = Mod(*args)
         stmt = Stmt(*args)
