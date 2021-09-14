@@ -20,18 +20,12 @@ class Example():
 
     def main(self, args):
         # サンプルコード(python)の取得
-        # pycode = self.get_pycode(5)
-        # print('arguments')
-        # print(args)
-        # with open(args[0]) as fp:
-        #     pycode = ''.join(fp.readlines())
-        #     # サンプルコードのast(dict)の取得
-        #     parsed_pycode = ast.parse(pycode)
-        #     parsed_ast = parse_nodes(parsed_pycode)
-        #     translator = Translator(parsed_ast)
-        #     # translator.print()
-        #     translator.run()
-        print([len(args), type(args)])
+        pycode = args[0]
+        # サンプルコードのast(dict)の取得
+        parsed_pycode = ast.parse(pycode)
+        parsed_ast = parse_nodes(parsed_pycode)
+        translator = Translator(parsed_ast)
+        translator.run()
 
 if __name__ == '__main__':
     import sys
