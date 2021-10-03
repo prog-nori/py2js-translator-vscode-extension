@@ -24,7 +24,7 @@
     "menus": {
       "commandPalette": [
         {
-          "command": "pu2js.liveConvert",
+          "command": "py2js.liveConvert",
           "when": "editorLangId == python"
         }
       ]

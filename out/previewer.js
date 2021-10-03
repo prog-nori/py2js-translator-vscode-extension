@@ -56,7 +56,9 @@ class Previewer {
         let editor = vscode_1.window.activeTextEditor;
         if (editor === null || editor === void 0 ? void 0 : editor.document) {
             this.setArg(editor.document.getText(), true);
-            this.run('translator/execute.py').then(res => {
+            // old
+            // this.run('translator/execute.py').then(res => {
+            this.run('py2js/py2js.py').then(res => {
                 console.log('async log:', res);
                 this.response_.text = String(res);
             });
@@ -70,9 +72,9 @@ class Previewer {
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Cat Coding</title>
         </head>
-        <body>
-            <h1>Preview</h1>
-            <code style="display: block;white-space: pre-wrap">${this.response_.text}</code>
+        <body style="white-space: pre">
+            ${this.response_.text}
+            <!-- <code style="display: block;white-space: pre-wrap">${this.response_.text}</code> -->
         </body>
         </html>`;
     }
