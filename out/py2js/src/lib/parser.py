@@ -16,8 +16,9 @@ class Parser(object):
         self.options = Options()
         self.indent = Indent()
         self.paths = PathList()
+        self.predefinedVariables = {}
 
-        self.symbol_ = Symbol(self.parse, self.options, self.indent, self.paths)
+        self.symbol_ = Symbol(self.parse, self.options, self.indent, self.predefinedVariables)
         return
     
     def get_nodes(self):

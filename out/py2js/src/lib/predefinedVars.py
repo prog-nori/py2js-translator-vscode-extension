@@ -8,9 +8,10 @@ def func():
     hoge.huga.hamachi = ...
 ならfunc.hoge.huga.hamachiとして記録
 """
-class PredefinedVariables(object):
+class PredefinedVars(object):
     def __init__(self):
-        self.list_ = list()
+        self.list_ = list() # リストとして変数一覧を記憶する
+        self.dict_ = dict() # 辞書として変数一覧を記憶する
         return
     
     # def add(self, path):

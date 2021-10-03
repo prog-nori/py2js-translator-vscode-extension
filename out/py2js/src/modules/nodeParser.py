@@ -4,9 +4,9 @@
 from src.util.convert_util import body_joiner
 
 class NodeParser(object):
-    def __init__(self, theParser, options, indent, paths):
+    def __init__(self, theParser, options, indent, predefinedVariables):
         self.parse = theParser
         self.options = options
         self.indent = indent
-        self.paths = paths
         self.body_joiner = body_joiner
+        self.predefinedVariables = predefinedVariables
