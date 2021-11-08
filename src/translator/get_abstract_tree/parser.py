@@ -6,14 +6,14 @@ import os
 import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), 'modules'))
 
-from mod import (
+from get_abstract_tree.modules.mod import (
     isModule,
     isInteractive,
     isExpression,
     isFunctionType
 )
 
-from stmt import (
+from get_abstract_tree.modules.stmt import (
     isFunctionDef,
     isAsyncFunctionDef,
     isClassDef,
@@ -42,7 +42,7 @@ from stmt import (
     # isAttributes as isStmtAttributes
 )
 
-from expr import (
+from get_abstract_tree.modules.expr import (
     isBoolOp,
     isNamedExpr,
     isBinOp,
@@ -72,18 +72,18 @@ from expr import (
     isSlice,
     # isAttributes as isExprAttributes
 )
-from expr_context import (
+from get_abstract_tree.modules.expr_context import (
     isLoad,
     isStore,
     isDel
 )
 
-from boolop import (
+from get_abstract_tree.modules.boolop import (
     isAnd,
     isOr
 )
 
-from module_operator import (
+from get_abstract_tree.modules.module_operator import (
     isAdd,
     isSub,
     isMult,
@@ -99,14 +99,14 @@ from module_operator import (
     isFloorDiv
 )
 
-from unaryop import (
+from get_abstract_tree.modules.unaryop import (
     isInvert,
     isNot,
     isUAdd,
     isUSub
 )
 
-from cmpop import (
+from get_abstract_tree.modules.cmpop import (
     isEq,
     isNotEq,
     isLt,
@@ -119,35 +119,35 @@ from cmpop import (
     isNotIn
 )
 
-from comprehension import (
+from get_abstract_tree.modules.comprehension import (
     isComprehension
 )
 
-from excepthandler import (
+from get_abstract_tree.modules.excepthandler import (
     isExceptHandler
 )
 
-from arguments import (
+from get_abstract_tree.modules.arguments import (
     isArguments
 )
 
-from arg import (
+from get_abstract_tree.modules.arg import (
     isArg
 )
 
-from module_keyword import (
+from get_abstract_tree.modules.module_keyword import (
     isKeyword
 )
 
-from alias import (
+from get_abstract_tree.modules.alias import (
     isAlias
 )
 
-from withitem import (
+from get_abstract_tree.modules.withitem import (
     isWithitem
 )
 
-from type_ignore import (
+from get_abstract_tree.modules.type_ignore import (
     isTypeIgnore
 )
 

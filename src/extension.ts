@@ -4,7 +4,9 @@ import {
 	commands,
 	Disposable,
 	ExtensionContext,
+    workspace,
 } from 'vscode';
+import { SSL_OP_EPHEMERAL_RSA } from 'constants';
 
 export function activate(context: ExtensionContext) {
     
@@ -64,15 +66,31 @@ class Py2JsPreviewController {
 
     constructor(py2jsPreview: Py2JsPreview) {
         this._py2jsPreview = py2jsPreview;
-        this._py2jsPreview.updatePreview();
+        // this._py2jsPreview.updatePreview();
+        this._onEvent();
 
         let subscriptions: Disposable[] = [];
+        // このイベント、非同期でほぼ常に更新するようにしたら重たいだろうか。
+        // ないしは、イベントがあってから数秒以内は非同期で数回更新をかけるようにするとか
+        workspace.onDidChangeTextDocument(this._onEvent, this, subscriptions);
+        workspace.onDidSaveTextDocument(this._onEvent, this, subscriptions);
         window.onDidChangeTextEditorSelection(this._onEvent, this, subscriptions);
+        //
         this._disposable = Disposable.from(...subscriptions);
     }
 
-    private _onEvent() {
+    private async _onEvent() {
+        // イベント発火
         this._py2jsPreview.updatePreview();
+        // 発火後0.1秒刻みでイベントを5回(0.5秒間)発火
+        let spanedSec = 0;
+        const id = setInterval(() => {
+            spanedSec++;
+            if(spanedSec >= 10) {
+                clearInterval(id);
+                this._py2jsPreview.updatePreview();
+            }
+        }, 50);
     }
 
     public dispose() {

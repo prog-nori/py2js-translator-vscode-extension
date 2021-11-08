@@ -246,10 +246,23 @@ class Stmt(NodeParser):
         return ''
 
     def convert_Import(self, nodes):
-        return ''
+        names = self.parse(nodes.names)
+        impt = lambda item: f'{self.indent.get()}import * as {item} from {item}'
+        aList = []
+        for aName in names:
+            aList.append(impt(aName))
+        state = '\n'.join(aList)
+        return state
 
     def convert_ImportFrom(self, nodes):
-        return ''
+        names = self.parse(nodes.names)
+        module = self.parse(nodes.module)
+        impt = lambda item: f'{self.indent.get()}import {item} from {module}'
+        aList = []
+        for aName in names:
+            aList.append(impt(aName))
+        state = '\n'.join(aList)
+        return state
 
     def convert_Global(self, nodes):
         return ''

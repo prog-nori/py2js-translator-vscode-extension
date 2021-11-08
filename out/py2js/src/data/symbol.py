@@ -13,11 +13,12 @@ from src.modules.operator import Operator
 from src.modules.comprehension import Comprehension
 from src.modules.cmpop import Cmpop
 from src.modules.excepthandler import ExceptHandler
+from src.modules.alias import Alias
 
 class Symbol(object):
 
-    def __init__(self, parser, options, indent, paths):
-        args = (parser, options, indent, paths)
+    def __init__(self, parser, options, indent, predefinedVariables):
+        args = (parser, options, indent, predefinedVariables)
         standard = Standard(*args)
         mod = Mod(*args)
         stmt = Stmt(*args)
@@ -28,8 +29,10 @@ class Symbol(object):
         comprehension = Comprehension(*args)
         cmpop = Cmpop(*args)
         exceptionHandler = ExceptHandler(*args)
+        alias = Alias(*args)
 
         self.indent = indent
+        self.predefinedVariables = predefinedVariables
         self.symbol_ = {
             # 標準の型
             list: standard.convert_List,
@@ -133,6 +136,7 @@ class Symbol(object):
             ast.arg: arg.convert_Arg,
             # keyword系
             # alias系
+            ast.alias: alias.convert_Alias,
             # withitem系
             # type_ignore系
         }
