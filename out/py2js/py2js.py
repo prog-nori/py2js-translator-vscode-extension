@@ -2,10 +2,15 @@
 # #! -*- coding: utf-8 -*-
 
 from src.lib.parser import Parser
+from src.lib.SymTableCollection import SymTableCollection
 
 class Py2JS(Parser):
-    def __init__(self, an_abstract_tree):
-        super().__init__()
+    def __init__(self, an_abstract_tree, a_symbol_table):
+        theSymtableCollection = SymTableCollection()
+        the_dict = theSymtableCollection.get_dict(a_symbol_table)
+        # print('theDict')
+        # print(the_dict)
+        super().__init__(the_dict)
         self.ast_ = an_abstract_tree
         return
     
