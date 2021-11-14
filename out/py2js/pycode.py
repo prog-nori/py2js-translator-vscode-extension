@@ -1,3 +1,7 @@
+import ast
+# from pprint import pprint
+# from get_abstract_tree.parser import parse_nodes
+from py2js.translator import Translator
 class Example:
     def __init__(self):
         return
@@ -20,6 +24,7 @@ class Example:
         aNumber = 111
         aNumber += 12
         aNumber -= 0
+        aNumber = 100
         for k in aDict:
             print(aDict[k])
         self.f(1, 2, 3, 4, 5)

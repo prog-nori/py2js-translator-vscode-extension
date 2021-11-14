@@ -55,7 +55,11 @@ class Expr(NodeParser):
     def convert_ListComp(self, nodes):
         elt = self.parse(nodes.elt)
         self.options.add('elt', elt)
+        namespace = '__listcomp__'
+        before_scopelist_len = len(self.current_scope_list)
+        self.current_scope_list.append(namespace)
         generators = ''.join(self.parse(nodes.generators))
+        del self.current_scope_list[before_scopelist_len:]
         self.options.remove('elt')
         state = generators
         return state

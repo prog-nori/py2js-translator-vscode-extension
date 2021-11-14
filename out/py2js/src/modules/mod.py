@@ -10,6 +10,7 @@ class Mod(NodeParser):
         # body
         # parse(nodes.body)
         body = self.parse(nodes.body)
+        self.predefinedVariables['Module'] = []
         return '\n'.join(body)
 
     def convert_Interactive(self, nodes):

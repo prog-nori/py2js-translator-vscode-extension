@@ -7,7 +7,7 @@ class Parser(object):
     """
     解析器のスーパークラス
     """
-    def __init__(self):
+    def __init__(self, a_symbol_table):
         """
         初期化作業
         """
@@ -16,8 +16,12 @@ class Parser(object):
         self.options = Options()
         self.indent = Indent()
         self.paths = PathList()
+        self.current_scope_list = []
+        self.predefinedVariables = {}
+        self.a_symbol_table = a_symbol_table
+        self.defined_vars_table = {}
 
-        self.symbol_ = Symbol(self.parse, self.options, self.indent, self.paths)
+        self.symbol_ = Symbol(self.parse, self.options, self.indent, self.predefinedVariables, self.current_scope_list, a_symbol_table, self.defined_vars_table)
         return
     
     def get_nodes(self):

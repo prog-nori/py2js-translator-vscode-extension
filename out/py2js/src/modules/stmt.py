@@ -9,16 +9,20 @@ class Stmt(NodeParser):
     def convert_FunctionDef(self, nodes):
         name = self.parse(nodes.name)
         args = self.parse(nodes.args)
+        namespace = name
         self.indent.increment()
+        if self.options.get('in-class') and name == '__init__':
+            namespace = 'constructor'
+            name = namespace
+        before_scopelist_len = len(self.current_scope_list)
+        self.current_scope_list.append(namespace)
         body = self.body_joiner(self.parse(nodes.body), self.indent)
+        del self.current_scope_list[before_scopelist_len:]
         self.indent.decrement()
         functinon_statement = ''
         anIndent = lambda: self.indent.get()
         if self.options.get('in-class'):
-            if name == '__init__':
-                functinon_statement = f'constructor({args}) {{\n{body}\n'
-            else:
-                functinon_statement = f'{name}({args}) {{\n{body}\n'
+            functinon_statement = f'{name}({args}) {{\n{body}\n'
         else:
             functinon_statement = f'function {name}({args}) {{\n{body}\n'
         functinon_statement += f'{anIndent()}}}\n'
@@ -29,11 +33,15 @@ class Stmt(NodeParser):
 
     def convert_ClassDef(self, nodes):
         name = self.parse(nodes.name)
+        namespace = name
         self.options.add('in-class', True)
         bases_ = self.parse(nodes.bases)
         bases = bases_[0] if len(bases_) > 0 else ''
         self.indent.increment()
+        before_scopelist_len = len(self.current_scope_list)
+        self.current_scope_list.append(namespace)
         body = self.body_joiner(self.parse(nodes.body), self.indent)
+        del self.current_scope_list[before_scopelist_len:]
         self.indent.decrement()
         self.options.remove('in-class')
         anIndent = lambda: self.indent.get()
@@ -60,8 +68,9 @@ class Stmt(NodeParser):
         targets = self.parse(nodes.targets)
         theTarget = ' = '.join(targets)
         value = self.parse(nodes.value)
-        # print(targets, value, ':', ' = '.join(targets), '=', value)
-        return 'let ' + ' = '.join([theTarget, value])
+        result = self.isDefinedVar(theTarget)
+        head = '' if result else 'let '
+        return head + ' = '.join([theTarget, value])
 
     def convert_AugAssign(self, nodes):
         target = self.parse(nodes.target)
@@ -80,7 +89,11 @@ class Stmt(NodeParser):
         target = self.parse(nodes.target)
         iter = self.parse(nodes.iter)
         self.indent.increment()
+        namespace = '__for__'
+        before_scopelist_len = len(self.current_scope_list)
+        self.current_scope_list.append(namespace)
         body = self.body_joiner(self.parse(nodes.body), self.indent)
+        del self.current_scope_list[before_scopelist_len:]
         self.indent.decrement()
         orelse = self.parse(nodes.orelse)
         for_statement = ''
@@ -120,7 +133,11 @@ class Stmt(NodeParser):
     def convert_While(self, nodes):
         test = self.parse(nodes.test)
         self.indent.increment()
+        namespace = '__while__'
+        before_scopelist_len = len(self.current_scope_list)
+        self.current_scope_list.append(namespace)
         body = self.body_joiner(self.parse(nodes.body), self.indent)
+        del self.current_scope_list[before_scopelist_len:]
         self.indent.decrement()
         # orelse = self.parse(nodes.orelse)
         # orelseはまだ実装しない
@@ -130,7 +147,11 @@ class Stmt(NodeParser):
 
     def convert_If(self, nodes):
         test = self.parse(nodes.test)
+        namespace = '__if__'
+        before_scopelist_len = len(self.current_scope_list)
+        self.current_scope_list.append(namespace)
         body = '\n'.join(self.parse(nodes.body))
+        del self.current_scope_list[before_scopelist_len:]
         orelse = self.parse(nodes.orelse)
         aList = list()
         anIndent = lambda: self.indent.get()
@@ -169,7 +190,11 @@ class Stmt(NodeParser):
         has_orelse = True if orelse != '' else False
         self.options.add('else', has_orelse)
         self.indent.increment()
+        namespace = '__try__'
+        before_scopelist_len = len(self.current_scope_list)
+        self.current_scope_list.append(namespace)
         finalbody = lambda: self.body_joiner(self.parse(nodes.finalbody), self.indent)
+        del self.current_scope_list[before_scopelist_len:]
         self.indent.decrement()
         handlers = lambda: ''.join(self.parse(nodes.handlers))
         has_finally = bool(finalbody() != '')
@@ -246,10 +271,23 @@ class Stmt(NodeParser):
         return ''
 
     def convert_Import(self, nodes):
-        return ''
+        names = self.parse(nodes.names)
+        impt = lambda item: f'{self.indent.get()}import * as {item} from {item}'
+        aList = []
+        for aName in names:
+            aList.append(impt(aName))
+        state = '\n'.join(aList)
+        return state
 
     def convert_ImportFrom(self, nodes):
-        return ''
+        names = self.parse(nodes.names)
+        module = self.parse(nodes.module)
+        impt = lambda item: f'{self.indent.get()}import {item} from {module}'
+        aList = []
+        for aName in names:
+            aList.append(impt(aName))
+        state = '\n'.join(aList)
+        return state
 
     def convert_Global(self, nodes):
         return ''

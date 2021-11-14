@@ -27,8 +27,12 @@ class Example():
             abstract_tree = ast.parse(pycode)
             translator = Translator(abstract_tree)
             translator.run()
+    
+def add(a, b):
+    return a + b
 
 if __name__ == '__main__':
     import sys
     example = Example()
     example.main(sys.argv[1:])
+    print(add(1, 2))
