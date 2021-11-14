@@ -19,8 +19,9 @@ class Parser(object):
         self.current_scope_list = []
         self.predefinedVariables = {}
         self.a_symbol_table = a_symbol_table
+        self.defined_vars_table = {}
 
-        self.symbol_ = Symbol(self.parse, self.options, self.indent, self.predefinedVariables, self.current_scope_list, a_symbol_table)
+        self.symbol_ = Symbol(self.parse, self.options, self.indent, self.predefinedVariables, self.current_scope_list, a_symbol_table, self.defined_vars_table)
         return
     
     def get_nodes(self):

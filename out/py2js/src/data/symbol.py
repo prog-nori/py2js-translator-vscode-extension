@@ -18,9 +18,9 @@ from src.modules.alias import Alias
 class Symbol(object):
 
     def __init__(self, parser, options, indent, predefinedVariables,
-    current_scope_list, a_symbol_table):
+    current_scope_list, a_symbol_table, defined_vars_table):
 
-        args = (parser, options, indent, predefinedVariables, current_scope_list, a_symbol_table)
+        args = (parser, options, indent, predefinedVariables, current_scope_list, a_symbol_table, defined_vars_table)
         standard = Standard(*args)
         mod = Mod(*args)
         stmt = Stmt(*args)
