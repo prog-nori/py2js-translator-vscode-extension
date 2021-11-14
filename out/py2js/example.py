@@ -19,10 +19,10 @@ def main():
         translator = Py2JS(tree, aSymbolTable)
         # translator.print()
         result = translator.run()
-        print('// == result ==')
-        print('/**')
-        print(translator.current_scope_list)
-        print('*/')
+        # print('// == result ==')
+        # print('/**')
+        # print(translator.current_scope_list)
+        # print('*/')
         print(result)
     return
 

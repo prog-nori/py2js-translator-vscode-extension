@@ -41,9 +41,9 @@ class SymTableCollection:
     def get_dict(self, datas):
         # result = dict()
         result = self.printTable(datas)
-        print('// Result:', result)
-        # print('^^^')
-        print()
+        # print('// Result:', result)
+        # # print('^^^')
+        # print()
         # print(res)
         # result.update(res)
 

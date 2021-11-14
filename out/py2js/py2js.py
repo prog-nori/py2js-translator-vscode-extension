@@ -8,8 +8,6 @@ class Py2JS(Parser):
     def __init__(self, an_abstract_tree, a_symbol_table):
         theSymtableCollection = SymTableCollection()
         the_dict = theSymtableCollection.get_dict(a_symbol_table)
-        # print('theDict')
-        # print(the_dict)
         super().__init__(the_dict)
         self.ast_ = an_abstract_tree
         return
@@ -19,11 +17,7 @@ class Py2JS(Parser):
         pprint(self.ast_)
     
     def run(self):
-        # self.set_nodes(self.ast_)
         result = self.parse(self.ast_)
-        # print('/** 【変数一覧】\n')
-        # print(self.predefinedVariables)
-        # print('\n*/\n')
         return result
 
 import ast

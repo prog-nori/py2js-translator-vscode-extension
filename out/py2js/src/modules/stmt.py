@@ -68,21 +68,9 @@ class Stmt(NodeParser):
         targets = self.parse(nodes.targets)
         theTarget = ' = '.join(targets)
         value = self.parse(nodes.value)
-        print('// コマネチ, {}'.format(theTarget))
-        print('/**')
         result = self.isDefinedVar(theTarget)
-        print('****')
-        print(self.defined_vars_table)
-        print('****')
-        print('戻りーち', result)
-        if result:
-            print('👍{}は[ 定義済み ]です。'.format(theTarget))
-        else:
-            print('❌{}は[ 未定義 ]です。'.format(theTarget))
-        print('*/')
-        # print(self.current_scope_list)
-        # print(targets, value, ':', ' = '.join(targets), '=', value)
-        return 'let ' + ' = '.join([theTarget, value])
+        head = '' if result else 'let '
+        return head + ' = '.join([theTarget, value])
 
     def convert_AugAssign(self, nodes):
         target = self.parse(nodes.target)
