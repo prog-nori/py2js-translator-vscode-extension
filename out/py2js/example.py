@@ -12,8 +12,9 @@ def get_text_from_the_file(filename):
 def main():
     filename = './pycode.py'
     with open(filename) as fp:
+        print('// hello worldZ')
         compile_type = 'exec'
-        aSymbolTable = symtable(get_text_from_the_file(filename), filename, compile_type)
+        aSymbolTable = symtable(get_text_from_the_file(filename), '', compile_type)
         lines = fp.readlines()
         tree = ast.parse(''.join(lines))
         translator = Py2JS(tree, aSymbolTable)

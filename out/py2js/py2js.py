@@ -30,16 +30,24 @@ class UnexpectedValueError(Exception):
     """the value is unexpected."""
     pass
 
+from symtable import symtable
+
 class Example():
     def __init__(self):
         return
+
+    def get_text_from_the_file(filename):
+        with open(filename) as fp:
+            return fp.read()
 
     def main(self, args):
         # サンプルコード(python)の取得
         pycode = args[0]
         # サンプルコードのast(dict)の取得
         parsed_pycode = ast.parse(pycode)
-        py2js = Py2JS(parsed_pycode)
+        compile_type = 'exec'
+        aSymbolTable = symtable(pycode, '', compile_type)
+        py2js = Py2JS(parsed_pycode, aSymbolTable)
         result = py2js.run()
         print(result)
 

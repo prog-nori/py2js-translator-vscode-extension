@@ -25,6 +25,8 @@ class Example:
         aNumber += 12
         aNumber -= 0
         aNumber = 100
+        aString = 'String'
+        aString = 'not String'
         for k in aDict:
             print(aDict[k])
         self.f(1, 2, 3, 4, 5)
