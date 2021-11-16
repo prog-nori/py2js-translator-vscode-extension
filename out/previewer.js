@@ -72,10 +72,7 @@ class Previewer {
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Cat Coding</title>
         </head>
-        <body style="white-space: pre">
-            ${this.response_.text}
-            <!-- <code style="display: block;white-space: pre-wrap">${this.response_.text}</code> -->
-        </body>
+        <body style="white-space: pre">${this.response_.text}</body>
         </html>`;
     }
 }
